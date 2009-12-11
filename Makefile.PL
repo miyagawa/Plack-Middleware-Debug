@@ -10,6 +10,7 @@ auto_set_repository;
 requires 'parent';
 requires 'Plack';
 requires 'Template';
+requires 'Template::Plugin::Dump';
 test_requires 'Test::More' => '0.70';
 extra_tests;
 author_requires 'ShipIt';

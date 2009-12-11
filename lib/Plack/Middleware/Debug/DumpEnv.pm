@@ -7,8 +7,10 @@ use Template;
 use Plack::Util::Accessor qw(renderer);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
+
 sub TEMPLATE {
     <<'EOTMPL' }
+[% USE Dump %]
 <table>
     <thead>
         <tr>
@@ -19,8 +21,8 @@ sub TEMPLATE {
     <tbody>
         [% FOREACH pair IN env.pairs %]
             <tr class="[% cycle('djDebugOdd' 'djDebugEven') %]">
-                <td>[% pair.key %]</td>
-                <td>[% pair.value %]</td>
+                <td>[% pair.key | html %]</td>
+                <td>[% Dump.dump_html(pair.value) %]</td>
             </tr>
         [% END %]
     </tbody>
@@ -38,7 +40,19 @@ sub process_request {
     my ($self, $env) = @_;
     my $content;
     my $template = $self->TEMPLATE;
-    $self->renderer->process(\$template, { env => $env }, \$content)
+    my $vars     = {
+        env   => $env,
+        cycle => sub {
+            our @cycle;
+            @cycle = @_ unless @cycle;
+            our $pointer;
+            $pointer ||= 0;
+            my $result = $cycle[$pointer];
+            $pointer = ($pointer + 1) % scalar(@cycle);
+            $result;
+        },
+    };
+    $self->renderer->process(\$template, $vars, \$content)
       || die $self->renderer->error;
     $self->content($content);
 }
