@@ -1,0 +1,43 @@
+# NAME
+
+Plack::Middleware::Debug - FIXME
+
+# SYNOPSIS
+
+    Plack::Middleware::Debug->new;
+
+# DESCRIPTION
+
+# METHODS
+
+# BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests through the web interface at
+<http://rt.cpan.org>.
+
+# INSTALLATION
+
+See perlmodinstall for information and options on installing Perl modules.
+
+# AVAILABILITY
+
+The latest version of this module is available from the Comprehensive Perl
+Archive Network (CPAN). Visit <http://www.perl.com/CPAN/> to find a CPAN
+site near you. Or see <http://search.cpan.org/dist/Plack-Middleware-Debug/>.
+
+The development version lives at <http://github.com/hanekomu/plack-middleware-debug/>.
+Instead of sending patches, please fork this project using the standard git
+and github infrastructure.
+
+# AUTHORS
+
+Marcel Gr&uuml;nauer, `<marcel@cpan.org>`
+
+# COPYRIGHT AND LICENSE
+
+Copyright 2009 by Marcel Gr&uuml;nauer
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
