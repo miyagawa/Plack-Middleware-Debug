@@ -8,11 +8,12 @@ sub TEMPLATE {
     <<'EOTMPL' }
 <table>
     <tbody>
-        [% FOREACH line = dump %]
-            <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
-                <td>[% line | html %]</td>
+% my $i;
+% for my $line (@{$_[0]->{dump}}) {
+            <tr class="<%= ++$i % 2 ? 'djDebugEven' : 'djDebugOdd' %>">
+                <td><%= $line %></td>
             </tr>
-        [% END %]
+% }
     </tbody>
 </table>
 EOTMPL
