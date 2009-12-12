@@ -31,6 +31,7 @@ sub url { '#' }
 sub title {
     my $self = shift;
     (my $name = ref $self) =~ s/.*:://;
+    $name =~ s/(?<=[a-z])(?=[A-Z])/ /g;
     $name;
 }
 sub nav_subtitle { '' }
