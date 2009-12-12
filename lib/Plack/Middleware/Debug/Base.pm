@@ -18,6 +18,7 @@ sub new {
     $self;
 }
 sub init             { }
+sub should_run       { 1 }
 sub process_request  { }
 sub process_response { }
 

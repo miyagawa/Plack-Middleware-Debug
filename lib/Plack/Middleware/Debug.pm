@@ -89,6 +89,7 @@ sub prepare_app {
         }
       ) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
+        next unless $panel_class->should_run;
         push @panels, $panel_class->new;
     }
     $self->panels(\@panels);
