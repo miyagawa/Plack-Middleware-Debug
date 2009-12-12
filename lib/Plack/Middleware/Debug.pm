@@ -2,9 +2,12 @@ package Plack::Middleware::Debug;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Util::Accessor qw(panels renderer);
+use File::ShareDir;
+use Plack::App::File;
+use Plack::Util::Accessor qw(panels renderer files);
 use Plack::Util;
 use Template;
+use Try::Tiny;
 use parent qw(Plack::Middleware);
 our $VERSION = '0.01';
 sub TEMPLATE {
@@ -77,6 +80,8 @@ EOTMPL
 sub prepare_app {
     my $self = shift;
 
+    my $root = try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
+
     my @panels;
     for my $package (@{ $self->panels || [ qw(Environment Response Timer) ] }) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
@@ -84,10 +89,16 @@ sub prepare_app {
     }
     $self->panels(\@panels);
     $self->renderer(Template->new);
+    $self->files( Plack::App::File->new(root => $root) );
 }
 
 sub call {
     my ($self, $env) = @_;
+
+    if ($env->{PATH_INFO} =~ m!^/debug_toolbar!) {
+        return $self->files->call($env);
+    }
+
     for my $panel (@{ $self->panels }) {
         $panel->process_request($env);
     }
