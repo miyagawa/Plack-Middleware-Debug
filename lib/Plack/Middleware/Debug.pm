@@ -139,17 +139,69 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Debug - FIXME
+Plack::Middleware::Debug - display stats about the current request/response
 
 =head1 SYNOPSIS
 
-    Plack::Middleware::Debug->new;
+    # app.psgi
+
+    use Plack::Builder;
+
+    my $app = sub {
+        return [ 200, [ 'Content-Type' => 'text/html' ],
+               [ '<body>Hello World</body>' ] ];
+    };
+
+    builder {
+        enable 'Debug';
+        $app;
+    };
+
 
 =head1 DESCRIPTION
 
-=head1 METHODS
+The debug middleware offers a configurable set of panels that displays
+information about the current request and response. The information is
+generated only for responses with a status of 200 (C<OK>) and a
+C<Content-Type> of C<text/html> and is embedded in the HTML that is sent back
+to the browser.
+
+=head1 PANELS
 
 =over 4
+
+=item DBITrace
+
+Display DBI trace information. See L<Plack::Middleware::Debug::DBITrace>.
+
+=item Environment
+
+Displays the PSGI environment from the request. See
+L<Plack::Middleware::Debug::Environment>.
+
+=item Memory
+
+Displays memory usage before the request and after the response. See
+L<Plack::Middleware::Debug::Memory>.
+
+=item ModuleVersions
+
+Displays the loaded modules and their versions. See
+L<Plack::Middleware::Debug::ModuleVersions>.
+
+=item PerlConfig
+
+Displays the configuration information of the Perl interpreter itself. See
+L<Plack::Middleware::Debug::PerlConfig>
+
+=item Response
+
+Displays the status code and response headers. See
+L<Plack::Middleware::Debug::Response>.
+
+=item Timer
+
+Displays how long the request took. See L<Plack::Middleware::Debug::Timer>.
 
 =back
 
@@ -184,5 +236,10 @@ Copyright 2009 by Marcel GrE<uuml>nauer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+The debug middleware is heavily influenced (that is, adapted from) the Django
+Debug Toolbar - see L<http://github.com/robhudson/django-debug-toolbar>.
 
 =cut
