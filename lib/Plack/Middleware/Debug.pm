@@ -92,22 +92,26 @@ sub call {
         $panel->process_request($env);
     }
     my $res     = $self->app->($env);
-    my %headers = @{ $res->[1] };
-    if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
-        for my $panel (@{ $self->panels }) {
-            $panel->process_response($res);
+
+    $self->response_cb($res, sub {
+        my $res = shift;
+        my %headers = @{ $res->[1] };
+        if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
+            for my $panel (@{ $self->panels }) {
+                $panel->process_response($res);
+            }
+            my $vars = {
+                panels   => $self->panels,
+                BASE_URL => '',
+            };
+            my $content;
+            my $template = $self->TEMPLATE;
+            $self->renderer->process(\$template, $vars, \$content)
+                || die $self->renderer->error;
+            $self->inject($res, $content);
         }
-        my $vars = {
-            panels   => $self->panels,
-            BASE_URL => '',
-        };
-        my $content;
-        my $template = $self->TEMPLATE;
-        $self->renderer->process(\$template, $vars, \$content)
-          || die $self->renderer->error;
-        $self->inject($res, $content);
-    }
-    $res;
+        $res;
+    });
 }
 
 sub inject {
