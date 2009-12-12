@@ -7,19 +7,15 @@ use parent qw(Plack::Middleware::Debug::Base);
 sub TEMPLATE {
     <<'EOTMPL' }
 <table>
-    <thead>
-        <tr>
-            <th>Trace</th>
-        </tr>
-    </thead>
     <tbody>
+        [% FOREACH line = dump %]
             <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
-                <td><pre>[% dump | html %]</pre></td>
+                <td>[% line | html %]</td>
             </tr>
+        [% END %]
     </tbody>
 </table>
 EOTMPL
-
 sub nav_title { 'DBI Trace' }
 
 sub process_request {
@@ -34,20 +30,15 @@ sub process_request {
 
 sub process_response {
     my ($self, $res, $env) = @_;
-
-    my $content;
     if (defined(my $trace = $env->{'plack.debug.dbi.trace'})) {
-        DBI->trace($trace); # reset
+        DBI->trace($trace);    # reset
         my $dump = $env->{'plack.debug.dbi.output'};
-        my $template = $self->TEMPLATE;
-        my $vars     = {
-            $self->renderer_vars,
-            dump => $$dump,
-        };
-        $self->renderer->process(\$template, $vars, \$content)
-            || die $self->renderer->error;
+        $self->content(
+            $self->render(
+                $self->TEMPLATE, { dump => [ split /\n/ => $$dump ] }
+            )
+        );
     }
-    $self->content($content);
 }
 1;
 __END__

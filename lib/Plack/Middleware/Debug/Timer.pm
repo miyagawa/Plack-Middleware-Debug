@@ -2,33 +2,10 @@ package Plack::Middleware::Debug::Timer;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Response;
 use Time::HiRes qw(gettimeofday tv_interval);
 use Plack::Util::Accessor qw(start_time elapsed);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
-
-sub TEMPLATE {
-    <<'EOTMPL' }
-<table>
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        [% WHILE headers.size %]
-            [% pair = headers.splice(0, 2) %]
-            <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
-                <td>[% pair.0 | html %]</td>
-                <td>[% pair.1 | html %]</td>
-            </tr>
-        [% END %]
-    </tbody>
-</table>
-EOTMPL
-
 sub nav_title { 'Timer' }
 
 sub nav_subtitle {
@@ -57,19 +34,14 @@ sub process_response {
     my ($self, $res, $env) = @_;
     my $end_time = [gettimeofday];
     $self->elapsed(tv_interval $self->start_time, $end_time);
-    my $content;
-    my $template = $self->TEMPLATE;
-    my $vars     = {
-        $self->renderer_vars,
-        headers => [
-            Start   => $self->format_time($self->start_time),
-            End     => $self->format_time($end_time),
-            Elapsed => $self->format_elapsed,
-        ],
-    };
-    $self->renderer->process(\$template, $vars, \$content)
-      || die $self->renderer->error;
-    $self->content($content);
+    $self->content(
+        $self->render_list_pairs(
+            [   Start   => $self->format_time($self->start_time),
+                End     => $self->format_time($end_time),
+                Elapsed => $self->format_elapsed,
+            ]
+        )
+    );
 }
 1;
 __END__

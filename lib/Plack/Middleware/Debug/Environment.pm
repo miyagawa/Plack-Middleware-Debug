@@ -2,44 +2,13 @@ package Plack::Middleware::Debug::Environment;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Response;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
-
-sub TEMPLATE {
-    <<'EOTMPL' }
-[% USE Dump %]
-<table>
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        [% FOREACH pair IN env.pairs %]
-            <tr class="[% cycle('djDebugOdd' 'djDebugEven') %]">
-                <td>[% pair.key | html %]</td>
-                <td>[% Dump.dump_html(pair.value) %]</td>
-            </tr>
-        [% END %]
-    </tbody>
-</table>
-EOTMPL
-
-sub nav_title    { 'Environment' }
+sub nav_title { 'Environment' }
 
 sub process_request {
     my ($self, $env) = @_;
-    my $content;
-    my $template = $self->TEMPLATE;
-    my $vars     = {
-        $self->renderer_vars,
-        env   => $env,
-    };
-    $self->renderer->process(\$template, $vars, \$content)
-      || die $self->renderer->error;
-    $self->content($content);
+    $self->content($self->render_hash($env));
 }
 1;
 __END__

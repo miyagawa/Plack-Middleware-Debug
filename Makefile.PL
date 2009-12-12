@@ -10,7 +10,7 @@ auto_set_repository;
 requires 'parent';
 requires 'Plack';
 requires 'Template';
-requires 'Template::Plugin::Dump';
+requires 'Data::Dump';
 requires 'File::ShareDir', '1.00';
 feature 'Module versions panel', - default => 1,
     'Module::Versions' => '0.01';

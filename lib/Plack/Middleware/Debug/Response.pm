@@ -2,35 +2,9 @@ package Plack::Middleware::Debug::Response;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Response;
 use parent qw(Plack::Middleware::Debug::Base);
+use HTTP::Headers;
 our $VERSION = '0.01';
-
-sub TEMPLATE {
-    <<'EOTMPL' }
-[% USE Dump %]
-<table>
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="djDebugOdd"">
-            <td>Status code</td>
-            <td>[% status | html %]</td>
-        </tr>
-        [% WHILE headers.size %]
-            [% pair = headers.splice(0, 2) %]
-            <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
-                <td>[% pair.0 | html %]</td>
-                <td>[% Dump.dump_html(pair.1) %]</td>
-            </tr>
-        [% END %]
-    </tbody>
-</table>
-EOTMPL
 
 sub nav_title { 'Response' }
 
@@ -48,16 +22,8 @@ sub format_headers {
 
 sub process_response {
     my ($self, $res, $env) = @_;
-    my $content;
-    my $template = $self->TEMPLATE;
-    my $vars     = {
-        $self->renderer_vars,
-        status  => $res->[0],
-        headers => [ $self->format_headers($res) ],
-    };
-    $self->renderer->process(\$template, $vars, \$content)
-      || die $self->renderer->error;
-    $self->content($content);
+    $self->content($self->render_list_pairs(
+        [ 'Status code' => $res->[0], $self->format_headers($res) ]));
 }
 1;
 __END__

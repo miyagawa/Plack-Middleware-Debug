@@ -4,7 +4,17 @@ use strict;
 use warnings;
 use Plack::Util::Accessor qw(content renderer);
 use Template;
+use Template::Stash;
+use Data::Dump;
 our $VERSION = '0.01';
+
+$Template::Stash::SCALAR_OPS->{dump} =
+$Template::Stash::LIST_OPS->{dump} =
+$Template::Stash::HASH_OPS->{dump} = sub {
+    my $scalar = shift;
+    return $scalar unless ref $scalar;
+    Data::Dump::dump($scalar);
+};
 
 sub new {
     my $proto = shift;
@@ -52,6 +62,66 @@ sub renderer_vars {
         }
     );
     wantarray ? %vars : \%vars;
+}
+
+sub render {
+    my ($self, $template, $vars) = @_;
+    my $content;
+    $self->renderer->process(\$template, { $self->renderer_vars, %$vars },
+        \$content)
+      || die $self->renderer->error;
+    $content;
+}
+
+sub template_for_hash {
+    <<'EOTMPL' }
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH pair IN hash.pairs %]
+            <tr class="[% cycle('djDebugOdd' 'djDebugEven') %]">
+                <td>[% pair.key | html %]</td>
+                <td>[% pair.value.dump | html %]</td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+EOTMPL
+
+sub render_hash {
+    my ($self, $hash) = @_;
+    $self->render($self->template_for_hash, { hash => $hash });
+}
+
+sub template_for_list_pairs {
+    <<'EOTMPL' }
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% WHILE list.size %]
+            [% pair = list.splice(0, 2) %]
+            <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
+                <td>[% pair.0 | html %]</td>
+                <td>[% pair.1.dump | html %]</td>
+            </tr>
+        [% END %]
+    </tbody>
+</table>
+EOTMPL
+
+sub render_list_pairs {
+    my ($self, $list) = @_;
+    $self->render($self->template_for_list_pairs, { list => $list });
 }
 1;
 __END__

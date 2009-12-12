@@ -2,46 +2,16 @@ package Plack::Middleware::Debug::ModuleVersions;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Response;
 use Module::Versions;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
-
-sub TEMPLATE {
-    <<'EOTMPL' }
-<table>
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        [% FOREACH pair IN modules.pairs %]
-            <tr class="[% cycle('djDebugOdd' 'djDebugEven') %]">
-                <td>[% pair.key | html %]</td>
-                <td>[% pair.value | html %]</td>
-            </tr>
-        [% END %]
-    </tbody>
-</table>
-EOTMPL
-
-sub nav_title    { 'Module Versions' }
+sub nav_title { 'Module Versions' }
 
 sub process_request {
     my ($self, $env) = @_;
-    my $content;
-    my $template = $self->TEMPLATE;
     my $modules = Module::Versions->HASH;
     $_ = $_->{VERSION} for values %$modules;
-    my $vars     = {
-        $self->renderer_vars,
-        modules   => $modules,
-    };
-    $self->renderer->process(\$template, $vars, \$content)
-      || die $self->renderer->error;
-    $self->content($content);
+    $self->content($self->render_hash($modules));
 }
 1;
 __END__

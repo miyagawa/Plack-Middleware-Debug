@@ -2,45 +2,14 @@ package Plack::Middleware::Debug::PerlConfig;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Response;
 use Config;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
-
-sub TEMPLATE {
-    <<'EOTMPL' }
-[% USE Dump %]
-<table>
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        [% FOREACH pair IN config.pairs %]
-            <tr class="[% cycle('djDebugOdd' 'djDebugEven') %]">
-                <td>[% pair.key | html %]</td>
-                <td>[% Dump.dump_html(pair.value) %]</td>
-            </tr>
-        [% END %]
-    </tbody>
-</table>
-EOTMPL
-
 sub nav_title { 'Perl Config' }
 
-sub process_response {
-    my ($self, $res, $env) = @_;
-    my $content;
-    my $template = $self->TEMPLATE;
-    my $vars     = {
-        $self->renderer_vars,
-        config => \%Config,
-    };
-    $self->renderer->process(\$template, $vars, \$content)
-      || die $self->renderer->error;
-    $self->content($content);
+sub process_request {
+    my ($self, $env) = @_;
+    $self->content($self->render_hash(\%Config));
 }
 1;
 __END__
