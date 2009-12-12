@@ -27,7 +27,7 @@ sub process_response { }
 sub dom_id {
     my $self = shift;
     (my $name = ref $self) =~ s/.*:://;
-    "djDebug${name}Panel";
+    "plDebug${name}Panel";
 }
 sub url { '#' }
 
@@ -85,7 +85,7 @@ sub template_for_list_pairs {
 % my $i;
 % while (@{$_[0]->{list}}) {
 % my($key, $value) = splice(@{$_[0]->{list}}, 0, 2);
-            <tr class="<%= ++$i % 2 ? 'djDebugOdd' : 'djDebugEven' %>">
+            <tr class="<%= ++$i % 2 ? 'plDebugOdd' : 'plDebugEven' %>">
                 <td><%= $key %></td>
                 <td><%= vardump($value) %></td>
             </tr>
@@ -156,6 +156,16 @@ second. In this base class it is an empty method. Not every panel will need to
 override it; some might only need to override C<process_request()>.
 
 =item C<dom_id>
+
+This is the class name used for HTML tags related to that panel. It defaults
+to C<plDebugXXXPanel> where C<XXX> is the base name of the panel package. For
+example, for the C<Environment> panel, it will be C<plDebugEnvironmentPanel>.
+
+=item C<url>
+
+This is the URL that is invoked when clicking on the panel's entry in the
+toolbar. It defaults to C<#>, which means that the panel is implemented on the
+same HTML page.
 
 =back
 

@@ -11,7 +11,7 @@ sub TEMPLATE {
     <tbody>
 % my $i;
 % for my $line (@{$_[0]->{dump}}) {
-            <tr class="<%= ++$i % 2 ? 'djDebugEven' : 'djDebugOdd' %>">
+            <tr class="<%= ++$i % 2 ? 'plDebugEven' : 'plDebugOdd' %>">
                 <td><%= $line %></td>
             </tr>
 % }

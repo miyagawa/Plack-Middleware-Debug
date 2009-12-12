@@ -31,13 +31,13 @@ sub TEMPLATE {
 <style type="text/css">
 	@import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
 </style>
-<div id="djDebug">
-	<div style="display:none;" id="djDebugToolbar">
-		<ul id="djDebugPanelList">
+<div id="plDebug">
+	<div style="display:none;" id="plDebugToolbar">
+		<ul id="plDebugPanelList">
 % if ($stash->{panels}) {
-			<li><a id="djHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
+			<li><a id="plHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
 % } else {
-			<li id="djDebugButton">DEBUG</li>
+			<li id="plDebugButton">DEBUG</li>
 % }
 % for my $panel (@{$stash->{panels}}) {
 				<li>
@@ -59,17 +59,17 @@ sub TEMPLATE {
 % } # end for
 		</ul>
 	</div>
-	<div style="display:none;" id="djDebugToolbarHandle">
-		<a title="Show Toolbar" id="djShowToolBarButton" href="#">&laquo;</a>
+	<div style="display:none;" id="plDebugToolbarHandle">
+		<a title="Show Toolbar" id="plShowToolBarButton" href="#">&laquo;</a>
 	</div>
 % for my $panel (@{$stash->{panels}}) {
 % if ($panel->content) {
 			<div id="<%= $panel->dom_id %>" class="panelContent">
-				<div class="djDebugPanelTitle">
-					<a href="" class="djDebugClose">Close</a>
-					<h3><% $panel->title %></h3>
+				<div class="plDebugPanelTitle">
+					<a href="" class="plDebugClose">Close</a>
+					<h3><%= $panel->title %></h3>
 				</div>
-				<div class="djDebugPanelContent">
+				<div class="plDebugPanelContent">
 				    <div class="scroll">
 				        <%= Text::MicroTemplate::encoded_string($panel->content) %>
 				    </div>
@@ -77,7 +77,7 @@ sub TEMPLATE {
 			</div>
 % }
 % } # end for
-	<div id="djDebugWindow" class="panelContent"></div>
+	<div id="plDebugWindow" class="panelContent"></div>
 </div>
 EOTMPL
 

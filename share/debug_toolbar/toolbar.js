@@ -1,65 +1,65 @@
 jQuery.noConflict();
 jQuery(function($j) {
-	var COOKIE_NAME = 'dj_debug_panel';
-	$j.djDebug = function(data, klass) {
-		$j.djDebug.init();
+	var COOKIE_NAME = 'plack_debug_panel';
+	$j.plDebug = function(data, klass) {
+		$j.plDebug.init();
 	}
-	$j.extend($j.djDebug, {
+	$j.extend($j.plDebug, {
 		init: function() {
 			var current = null;
-			$j('#djDebugPanelList li a').click(function() {
+			$j('#plDebugPanelList li a').click(function() {
 				if (!this.className) {
 					return false;
 				}
-				current = $j('#djDebug #' + this.className);
+				current = $j('#plDebug #' + this.className);
 				if (current.is(':visible')) {
-				    $j(document).trigger('close.djDebug');
+				    $j(document).trigger('close.plDebug');
 					$j(this).parent().removeClass('active');
 				} else {
 					$j('.panelContent').hide(); // Hide any that are already open
 					current.show();
-					$j.djDebug.open();
-					$j('#djDebugToolbar li').removeClass('active');
+					$j.plDebug.open();
+					$j('#plDebugToolbar li').removeClass('active');
 					$j(this).parent().addClass('active');
 				}
 				return false;
 			});
-			$j('#djDebug a.djDebugClose').click(function() {
-				$j(document).trigger('close.djDebug');
-				$j('#djDebugToolbar li').removeClass('active');
+			$j('#plDebug a.plDebugClose').click(function() {
+				$j(document).trigger('close.plDebug');
+				$j('#plDebugToolbar li').removeClass('active');
 				return false;
 			});
-			$j('#djDebug a.remoteCall').click(function() {
-				$j('#djDebugWindow').load(this.href, {}, function() {
-					$j('#djDebugWindow a.djDebugBack').click(function() {
+			$j('#plDebug a.remoteCall').click(function() {
+				$j('#plDebugWindow').load(this.href, {}, function() {
+					$j('#plDebugWindow a.plDebugBack').click(function() {
 						$j(this).parent().parent().hide();
 						return false;
 					});
 				});
-				$j('#djDebugWindow').show();
+				$j('#plDebugWindow').show();
 				return false;
 			});
-			$j('#djDebugTemplatePanel a.djTemplateShowContext').click(function() {
-				$j.djDebug.toggle_arrow($j(this).children('.toggleArrow'))
-				$j.djDebug.toggle_content($j(this).parent().next());
+			$j('#plDebugTemplatePanel a.plTemplateShowContext').click(function() {
+				$j.plDebug.toggle_arrow($j(this).children('.toggleArrow'))
+				$j.plDebug.toggle_content($j(this).parent().next());
 				return false;
 			});
-			$j('#djDebugSQLPanel a.djSQLShowStacktrace').click(function() {
-				$j.djDebug.toggle_content($j('.djSQLHideStacktraceDiv', $j(this).parents('tr')));
+			$j('#plDebugSQLPanel a.plSQLShowStacktrace').click(function() {
+				$j.plDebug.toggle_content($j('.plSQLHideStacktraceDiv', $j(this).parents('tr')));
 				return false;
 			});
-			$j('#djHideToolBarButton').click(function() {
-				$j.djDebug.hide_toolbar(true);
+			$j('#plHideToolBarButton').click(function() {
+				$j.plDebug.hide_toolbar(true);
 				return false;
 			});
-			$j('#djShowToolBarButton').click(function() {
-				$j.djDebug.show_toolbar();
+			$j('#plShowToolBarButton').click(function() {
+				$j.plDebug.show_toolbar();
 				return false;
 			});
 			if ($j.cookie(COOKIE_NAME)) {
-				$j.djDebug.hide_toolbar(false);
+				$j.plDebug.hide_toolbar(false);
 			} else {
-				$j.djDebug.show_toolbar(false);
+				$j.plDebug.show_toolbar(false);
 			}
 		},
 		open: function() {
@@ -73,20 +73,20 @@ jQuery(function($j) {
 			}
 		},
 		close: function() {
-			$j(document).trigger('close.djDebug');
+			$j(document).trigger('close.plDebug');
 			return false;
 		},
 		hide_toolbar: function(setCookie) {
 			// close any sub panels
-			$j('#djDebugWindow').hide();
+			$j('#plDebugWindow').hide();
 			// close all panels
 			$j('.panelContent').hide();
-			$j('#djDebugToolbar li').removeClass('active');
+			$j('#plDebugToolbar li').removeClass('active');
 			// finally close toolbar
-			$j('#djDebugToolbar').hide('fast');
-			$j('#djDebugToolbarHandle').show();
+			$j('#plDebugToolbar').hide('fast');
+			$j('#plDebugToolbarHandle').show();
 			// Unbind keydown
-			$j(document).unbind('keydown.djDebug');
+			$j(document).unbind('keydown.plDebug');
 			if (setCookie) {
 				$j.cookie(COOKIE_NAME, 'hide', {
 					path: '/',
@@ -96,16 +96,16 @@ jQuery(function($j) {
 		},
 		show_toolbar: function(animate) {
 			// Set up keybindings
-			$j(document).bind('keydown.djDebug', function(e) {
+			$j(document).bind('keydown.plDebug', function(e) {
 				if (e.keyCode == 27) {
-					$j.djDebug.close();
+					$j.plDebug.close();
 				}
 			});
-			$j('#djDebugToolbarHandle').hide();
+			$j('#plDebugToolbarHandle').hide();
 			if (animate) {
-				$j('#djDebugToolbar').show('fast');
+				$j('#plDebugToolbar').show('fast');
 			} else {
-				$j('#djDebugToolbar').show();
+				$j('#plDebugToolbar').show();
 			}
 			$j.cookie(COOKIE_NAME, null, {
 				path: '/',
@@ -118,10 +118,10 @@ jQuery(function($j) {
 			elem.html(elem.html() == uarr ? darr : uarr);
 		}
 	});
-	$j(document).bind('close.djDebug', function() {
+	$j(document).bind('close.plDebug', function() {
 		// If a sub-panel is open, close that
-		if ($j('#djDebugWindow').is(':visible')) {
-			$j('#djDebugWindow').hide();
+		if ($j('#plDebugWindow').is(':visible')) {
+			$j('#plDebugWindow').hide();
 			return;
 		}
 		// If a panel is open, close that
@@ -130,12 +130,12 @@ jQuery(function($j) {
 			return;
 		}
 		// Otherwise, just minimize the toolbar
-		if ($j('#djDebugToolbar').is(':visible')) {
-			$j.djDebug.hide_toolbar(true);
+		if ($j('#plDebugToolbar').is(':visible')) {
+			$j.plDebug.hide_toolbar(true);
 			return;
 		}
 	});
 });
 jQuery(function() {
-	jQuery.djDebug();
+	jQuery.plDebug();
 });

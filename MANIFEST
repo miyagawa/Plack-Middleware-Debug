@@ -46,7 +46,7 @@ share/debug_toolbar/back.png
 share/debug_toolbar/back_hover.png
 share/debug_toolbar/close.png
 share/debug_toolbar/close_hover.png
-share/debug_toolbar/djdt_vertical.png
+share/debug_toolbar/plack_debug_vertical.png
 share/debug_toolbar/indicator.png
 share/debug_toolbar/jquery.cookie.js
 share/debug_toolbar/jquery.js

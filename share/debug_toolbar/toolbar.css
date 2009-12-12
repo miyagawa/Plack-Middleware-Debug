@@ -1,14 +1,14 @@
 /* Debug Toolbar CSS Reset, adapted from Eric Meyer's CSS Reset */
-#djDebug {color:#000;background:#FFF;}
-#djDebug, #djDebug div, #djDebug span, #djDebug applet, #djDebug object, #djDebug iframe,
-#djDebug h1, #djDebug h2, #djDebug h3, #djDebug h4, #djDebug h5, #djDebug h6, #djDebug p, #djDebug blockquote, #djDebug pre,
-#djDebug a, #djDebug abbr, #djDebug acronym, #djDebug address, #djDebug big, #djDebug cite, #djDebug code,
-#djDebug del, #djDebug dfn, #djDebug em, #djDebug font, #djDebug img, #djDebug ins, #djDebug kbd, #djDebug q, #djDebug s, #djDebug samp,
-#djDebug small, #djDebug strike, #djDebug strong, #djDebug sub, #djDebug sup, #djDebug tt, #djDebug var,
-#djDebug b, #djDebug u, #djDebug i, #djDebug center,
-#djDebug dl, #djDebug dt, #djDebug dd, #djDebug ol, #djDebug ul, #djDebug li,
-#djDebug fieldset, #djDebug form, #djDebug label, #djDebug legend,
-#djDebug table, #djDebug caption, #djDebug tbody, #djDebug tfoot, #djDebug thead, #djDebug tr, #djDebug th, #djDebug td {
+#plDebug {color:#000;background:#FFF;}
+#plDebug, #plDebug div, #plDebug span, #plDebug applet, #plDebug object, #plDebug iframe,
+#plDebug h1, #plDebug h2, #plDebug h3, #plDebug h4, #plDebug h5, #plDebug h6, #plDebug p, #plDebug blockquote, #plDebug pre,
+#plDebug a, #plDebug abbr, #plDebug acronym, #plDebug address, #plDebug big, #plDebug cite, #plDebug code,
+#plDebug del, #plDebug dfn, #plDebug em, #plDebug font, #plDebug img, #plDebug ins, #plDebug kbd, #plDebug q, #plDebug s, #plDebug samp,
+#plDebug small, #plDebug strike, #plDebug strong, #plDebug sub, #plDebug sup, #plDebug tt, #plDebug var,
+#plDebug b, #plDebug u, #plDebug i, #plDebug center,
+#plDebug dl, #plDebug dt, #plDebug dd, #plDebug ol, #plDebug ul, #plDebug li,
+#plDebug fieldset, #plDebug form, #plDebug label, #plDebug legend,
+#plDebug table, #plDebug caption, #plDebug tbody, #plDebug tfoot, #plDebug thead, #plDebug tr, #plDebug th, #plDebug td {
 	margin:0;
 	padding:0;
 	border:0;
@@ -22,7 +22,7 @@
 	text-align:left;
 }
 
-#djDebug #djDebugToolbar {
+#plDebug #plDebugToolbar {
 	background:#111;
 	width:200px;
 	z-index:100000000;
@@ -33,17 +33,17 @@
 	opacity:0.9;
 }
 
-#djDebug #djDebugToolbar small {
+#plDebug #plDebugToolbar small {
 	color:#999;
 }
 
-#djDebug #djDebugToolbar ul {
+#plDebug #plDebugToolbar ul {
 	margin:0;
 	padding:0;
 	list-style:none;
 }
 
-#djDebug #djDebugToolbar li {
+#plDebug #plDebugToolbar li {
 	border-bottom:1px solid #222;
 	color:#fff;
 	display:block;
@@ -55,8 +55,8 @@
 	width:auto;
 }
 
-#djDebug #djDebugToolbar li>a,
-#djDebug #djDebugToolbar li>div.contentless  {
+#plDebug #plDebugToolbar li>a,
+#plDebug #plDebugToolbar li>div.contentless  {
 	font-weight:normal;
 	font-style:normal;
 	text-decoration:none;
@@ -66,12 +66,12 @@
 	color:#fff;
 }
 
-#djDebug #djDebugToolbar li a:hover {
+#plDebug #plDebugToolbar li a:hover {
 	color:#111;
 	background-color:#ffc;
 }
 
-#djDebug #djDebugToolbar li.active {
+#plDebug #plDebugToolbar li.active {
 	background-image:url(indicator.png);
 	background-repeat:no-repeat;
 	background-position:left center;
@@ -79,12 +79,12 @@
 	padding-left:10px;	
 }
 
-#djDebug #djDebugToolbar li.active a:hover {
+#plDebug #plDebugToolbar li.active a:hover {
 	color:#b36a60;
 	background-color:transparent;
 }
 
-#djDebug #djDebugToolbar li small {
+#plDebug #plDebugToolbar li small {
 	font-size:12px;
 	color:#999;
 	font-style:normal;
@@ -92,7 +92,7 @@
 	font-variant:small-caps;
 }
 
-#djDebug #djDebugToolbarHandle {
+#plDebug #plDebugToolbarHandle {
 	position:fixed;
 	background:#fff;
 	border:1px solid #111;
@@ -102,10 +102,10 @@
 	opacity:0.75;
 }
 
-#djDebug a#djShowToolBarButton {
+#plDebug a#plShowToolBarButton {
 	display:block;
-	height:75px;
-	width:30px;
+	height:60px;
+	width:60px;
 	border-right:none;
 	border-bottom:4px solid #fff;
 	border-top:4px solid #fff;
@@ -116,12 +116,12 @@
 	text-decoration:none;
 	text-align:center;
 	text-indent:-999999px;
-	background:#000 url(djdt_vertical.png) no-repeat left center;
+	background:#000 url(information.gif) no-repeat left center;
 	opacity:0.5;
 }
 
-#djDebug a#djShowToolBarButton:hover {
-	background-color:#111;
+#plDebug a#plShowToolBarButton:hover {
+	background-color:#000;
 	padding-right:6px;
 	border-top-color:#FFE761;
 	border-left-color:#FFE761;
@@ -129,16 +129,16 @@
 	opacity:1.0;
 }
 
-#djDebug pre {
+#plDebug pre {
 	background-color:#ffffff;
 	overflow:auto;
 }
 
-#djDebug tr.djDebugOdd {
+#plDebug tr.plDebugOdd {
 	background-color:#f5f5f5;
 }
 
-#djDebug .panelContent {
+#plDebug .panelContent {
 	display:none;
 	position:fixed;
 	margin:0;
@@ -151,11 +151,11 @@
 	z-index:100000000;
 }
 
-#djDebug .panelContent > div {
+#plDebug .panelContent > div {
 	border-bottom:1px solid #ddd;
 }
 
-#djDebug .djDebugPanelTitle {
+#plDebug .plDebugPanelTitle {
 	position:absolute;
 	background-color:#ffc;
 	color:#666;
@@ -166,7 +166,7 @@
 	height:50px;
 }
 
-#djDebug .djDebugPanelContent {
+#plDebug .plDebugPanelContent {
 	position:absolute;
 	top:50px;
 	right:0;
@@ -176,26 +176,26 @@
 	padding:0 0 0 20px;
 }
 
-#djDebug .djDebugPanelContent .scroll {
+#plDebug .plDebugPanelContent .scroll {
 	height:100%;
 	overflow:auto;
 	display:block;
 	padding:0 10px 0 0;
 }
 
-#djDebug h3 {
+#plDebug h3 {
 	font-size:24px;
 	font-weight:normal;
 	line-height:50px;
 }
 
-#djDebug h4 {
+#plDebug h4 {
 	font-size:20px;
 	font-weight:bold;
 	margin-top:0.8em;
 }
 
-#djDebug .panelContent table {
+#plDebug .panelContent table {
 	border:1px solid #ccc;
 	border-collapse:collapse;
 	width:100%;
@@ -204,42 +204,42 @@
 	margin-top:0.8em;
 	overflow: auto;
 }
-#djDebug .panelContent tbody td,
-#djDebug .panelContent tbody th {
+#plDebug .panelContent tbody td,
+#plDebug .panelContent tbody th {
 	vertical-align:top;
 	padding:2px 3px;
 }
-#djDebug .panelContent thead th {
+#plDebug .panelContent thead th {
 	padding:1px 6px 1px 3px;
 	text-align:left;
 	font-weight:bold;
 	font-size:14px;
 }
-#djDebug .panelContent tbody th {
+#plDebug .panelContent tbody th {
 	width:12em;
 	text-align:right;
 	color:#666;
 	padding-right:.5em;
 }
 
-#djDebug .panelContent code {
+#plDebug .panelContent code {
 	font-family:Consolas, Monaco, "Bitstream Vera Sans Mono", "Lucida Console", monospace;
 }
 /*
-#djDebug .panelContent p a:hover, #djDebug .panelContent dd a:hover {
+#plDebug .panelContent p a:hover, #plDebug .panelContent dd a:hover {
 	color:#111;
 	background-color:#ffc;
 }
 
-#djDebug .panelContent p {
+#plDebug .panelContent p {
 	padding:0 5px;
 }
 
-#djDebug .panelContent p, #djDebug .panelContent table, #djDebug .panelContent ol, #djDebug .panelContent ul, #djDebug .panelContent dl {
+#plDebug .panelContent p, #plDebug .panelContent table, #plDebug .panelContent ol, #plDebug .panelContent ul, #plDebug .panelContent dl {
 	margin:5px 0 15px;
 	background-color:#fff;
 }
-#djDebug .panelContent table {
+#plDebug .panelContent table {
 	clear:both;
 	border:0;
 	padding:0;
@@ -248,15 +248,15 @@
 	border-spacing:0;
 }
 
-#djDebug .panelContent table a {
+#plDebug .panelContent table a {
 	color:#000;
 	padding:2px 4px;
 }
-#djDebug .panelContent table a:hover {
+#plDebug .panelContent table a:hover {
 	background-color:#ffc;
 }
 
-#djDebug .panelContent table th {
+#plDebug .panelContent table th {
 	background-color:#333;
 	font-weight:bold;
 	color:#fff;
@@ -264,7 +264,7 @@
 	text-align:left;
 	cursor:pointer;
 }
-#djDebug .panelContent table td {
+#plDebug .panelContent table td {
 	padding:5px 10px;
 	font-size:14px;
 	background:#fff;
@@ -272,12 +272,12 @@
 	vertical-align:top;
 	border:0;
 }
-#djDebug .panelContent table tr.djDebugOdd td {
+#plDebug .panelContent table tr.plDebugOdd td {
   background:#eee;
 }
 */
 
-#djDebug .panelContent .djDebugClose {
+#plDebug .panelContent .plDebugClose {
 	text-indent:-9999999px;
 	display:block;
 	position:absolute;
@@ -288,38 +288,38 @@
 	background:url(close.png) no-repeat center center;
 }
 
-#djDebug .panelContent .djDebugClose:hover {
+#plDebug .panelContent .plDebugClose:hover {
 	background-image:url(close_hover.png);
 }
 
-#djDebug .panelContent .djDebugClose.djDebugBack {
+#plDebug .panelContent .plDebugClose.plDebugBack {
 	background-image:url(back.png);
 }
 
-#djDebug .panelContent .djDebugClose.djDebugBack:hover  {
+#plDebug .panelContent .plDebugClose.plDebugBack:hover  {
 	background-image:url(back_hover.png);
 }
 
-#djDebug .panelContent dt, #djDebug .panelContent dd {
+#plDebug .panelContent dt, #plDebug .panelContent dd {
 	display:block;
 }
 
-#djDebug .panelContent dt {
+#plDebug .panelContent dt {
 	margin-top:0.75em;
 }
 
-#djDebug .panelContent dd {
+#plDebug .panelContent dd {
 	margin-left:10px;
 }
 
-#djDebug a.toggleTemplate {
+#plDebug a.toggleTemplate {
 	padding:4px;
 	background-color:#bbb;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 }
 
-#djDebug a.toggleTemplate:hover {
+#plDebug a.toggleTemplate:hover {
 	padding:4px;
 	background-color:#444;
 	color:#ffe761;
@@ -328,28 +328,28 @@
 }
 
 
-#djDebug a.djTemplateShowContext, #djDebug a.djTemplateShowContext span.toggleArrow {
+#plDebug a.plTemplateShowContext, #plDebug a.plTemplateShowContext span.toggleArrow {
 	color:#999;
 }
 
-#djDebug a.djTemplateShowContext:hover,  #djDebug a.djTemplateShowContext:hover span.toggleArrow {
+#plDebug a.plTemplateShowContext:hover,  #plDebug a.plTemplateShowContext:hover span.toggleArrow {
 	color:#000;
 	cursor:pointer;
 }
 
-#djDebug .djDebugSqlWrap {
+#plDebug .plDebugSqlWrap {
 	position:relative;
 }
 
-#djDebug .djDebugSql {
+#plDebug .plDebugSql {
 	z-index:100000002;
 }
 
-#djDebug .djSQLHideStacktraceDiv tbody th {
+#plDebug .plSQLHideStacktraceDiv tbody th {
 	text-align: left;
 }
 
-#djDebug span.djDebugLineChart {
+#plDebug span.plDebugLineChart {
 	border-top:3px solid #777;
 	position:absolute;
 	bottom:0;
@@ -358,26 +358,26 @@
 	display:block;
 	z-index:1000000001;
 }
-#djDebug span.djDebugLineChartWarning {
+#plDebug span.plDebugLineChartWarning {
 	border-top-color:#900;
 }
 
-#djDebug .highlight  { color:#000; }
-#djDebug .highlight .err { color:#000; } /* Error */
-#djDebug .highlight .g { color:#000; } /* Generic */
-#djDebug .highlight .k { color:#000; font-weight:bold } /* Keyword */
-#djDebug .highlight .o { color:#000; } /* Operator */
-#djDebug .highlight .n { color:#000; } /* Name */
-#djDebug .highlight .mi { color:#000; font-weight:bold } /* Literal.Number.Integer */
-#djDebug .highlight .l { color:#000; } /* Literal */
-#djDebug .highlight .x { color:#000; } /* Other */
-#djDebug .highlight .p { color:#000; } /* Punctuation */
-#djDebug .highlight .m { color:#000; font-weight:bold } /* Literal.Number */
-#djDebug .highlight .s { color:#333 } /* Literal.String */
-#djDebug .highlight .w { color:#888888 } /* Text.Whitespace */
-#djDebug .highlight .il { color:#000; font-weight:bold } /* Literal.Number.Integer.Long */
-#djDebug .highlight .na { color:#333 } /* Name.Attribute */
-#djDebug .highlight .nt { color:#000; font-weight:bold } /* Name.Tag */
-#djDebug .highlight .nv { color:#333 } /* Name.Variable */
-#djDebug .highlight .s2 { color:#333 } /* Literal.String.Double */
-#djDebug .highlight .cp { color:#333 } /* Comment.Preproc */
+#plDebug .highlight  { color:#000; }
+#plDebug .highlight .err { color:#000; } /* Error */
+#plDebug .highlight .g { color:#000; } /* Generic */
+#plDebug .highlight .k { color:#000; font-weight:bold } /* Keyword */
+#plDebug .highlight .o { color:#000; } /* Operator */
+#plDebug .highlight .n { color:#000; } /* Name */
+#plDebug .highlight .mi { color:#000; font-weight:bold } /* Literal.Number.Integer */
+#plDebug .highlight .l { color:#000; } /* Literal */
+#plDebug .highlight .x { color:#000; } /* Other */
+#plDebug .highlight .p { color:#000; } /* Punctuation */
+#plDebug .highlight .m { color:#000; font-weight:bold } /* Literal.Number */
+#plDebug .highlight .s { color:#333 } /* Literal.String */
+#plDebug .highlight .w { color:#888888 } /* Text.Whitespace */
+#plDebug .highlight .il { color:#000; font-weight:bold } /* Literal.Number.Integer.Long */
+#plDebug .highlight .na { color:#333 } /* Name.Attribute */
+#plDebug .highlight .nt { color:#000; font-weight:bold } /* Name.Tag */
+#plDebug .highlight .nv { color:#333 } /* Name.Variable */
+#plDebug .highlight .s2 { color:#333 } /* Literal.String.Double */
+#plDebug .highlight .cp { color:#333 } /* Comment.Preproc */
