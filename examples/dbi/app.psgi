@@ -15,6 +15,6 @@ my $app = sub {
 };
 
 builder {
-    enable 'Debug', panels => [ qw(Environment Response Timer Memory DBI) ];
+    enable 'Debug', panels => [ qw(Environment Response Timer Memory DBITrace) ];
     $app;
 };

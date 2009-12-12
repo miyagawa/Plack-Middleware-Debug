@@ -1,4 +1,4 @@
-package Plack::Middleware::Debug::DBI;
+package Plack::Middleware::Debug::DBITrace;
 use 5.008;
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ sub init {
     my $self = shift;
     $self->renderer(Template->new);
 }
-sub nav_title { 'DBI' }
+sub nav_title { 'DBI Trace' }
 
 sub process_request {
     my ($self, $env) = @_;
@@ -60,7 +60,7 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Debug::DBI - DBI trace panel
+Plack::Middleware::Debug::DBITrace - DBI trace panel
 
 =head1 SEE ALSO
 
