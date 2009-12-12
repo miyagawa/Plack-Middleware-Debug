@@ -1,4 +1,4 @@
-package Plack::Middleware::Debug::DumpEnv;
+package Plack::Middleware::Debug::Environment;
 use 5.008;
 use strict;
 use warnings;
@@ -33,24 +33,15 @@ sub init {
     my $self = shift;
     $self->renderer(Template->new);
 }
-sub nav_title    { 'Env' }
-sub nav_subtitle { 'environment dumper' }
+sub nav_title    { 'Environment' }
 
 sub process_request {
     my ($self, $env) = @_;
     my $content;
     my $template = $self->TEMPLATE;
     my $vars     = {
+        $self->renderer_vars,
         env   => $env,
-        cycle => sub {
-            our @cycle;
-            @cycle = @_ unless @cycle;
-            our $pointer;
-            $pointer ||= 0;
-            my $result = $cycle[$pointer];
-            $pointer = ($pointer + 1) % scalar(@cycle);
-            $result;
-        },
     };
     $self->renderer->process(\$template, $vars, \$content)
       || die $self->renderer->error;
@@ -61,11 +52,11 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Debug::DumpEnv - Debug panel to dump the environment
+Plack::Middleware::Debug::Environment - Debug panel to inspect the environment
 
 =head1 SYNOPSIS
 
-    Plack::Middleware::Debug::DumpEnv->new;
+    Plack::Middleware::Debug::Environment->new;
 
 =head1 DESCRIPTION
 

@@ -5,7 +5,7 @@ my $app = sub {
 };
 
 builder {
-    enable 'Debug', panels => [ qw(DumpEnv) ];
+    enable 'Debug', panels => [ qw(Environment Response Timer) ];
     enable "Plack::Middleware::Static", path => qr{^/debug_toolbar/}, root => './htdocs/';
     $app;
 };

@@ -17,8 +17,7 @@ sub new {
     $self->init;
     $self;
 }
-
-sub init {}
+sub init             { }
 sub process_request  { }
 sub process_response { }
 
@@ -27,7 +26,6 @@ sub dom_id {
     (my $name = ref $self) =~ s/.*:://;
     "djDebug${name}Panel";
 }
-
 sub url { '#' }
 
 sub title {
@@ -35,7 +33,22 @@ sub title {
     (my $name = ref $self) =~ s/.*:://;
     $name;
 }
+sub nav_subtitle { '' }
 
+sub renderer_vars {
+    my %vars = (
+        cycle => sub {
+            our @cycle;
+            @cycle = @_ unless @cycle;
+            our $pointer;
+            $pointer ||= 0;
+            my $result = $cycle[$pointer];
+            $pointer = ($pointer + 1) % scalar(@cycle);
+            $result;
+        }
+    );
+    wantarray ? %vars : \%vars;
+}
 1;
 __END__
 
