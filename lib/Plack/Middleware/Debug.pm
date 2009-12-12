@@ -113,7 +113,7 @@ sub call {
             my %headers = @{ $res->[1] };
             if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
                 for my $panel (@{ $self->panels }) {
-                    $panel->process_response($res);
+                    $panel->process_response($res, $env);
                 }
                 my $vars = {
                     panels   => $self->panels,

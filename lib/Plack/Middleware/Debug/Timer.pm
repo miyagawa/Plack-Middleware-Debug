@@ -59,7 +59,7 @@ sub process_request {
 }
 
 sub process_response {
-    my ($self, $res) = @_;
+    my ($self, $res, $env) = @_;
     my $end_time = [gettimeofday];
     $self->elapsed(tv_interval $self->start_time, $end_time);
     my $content;

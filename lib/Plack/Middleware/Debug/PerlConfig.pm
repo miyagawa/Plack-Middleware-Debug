@@ -37,7 +37,7 @@ sub init {
 sub nav_title { 'Perl Config' }
 
 sub process_response {
-    my ($self, $res) = @_;
+    my ($self, $res, $env) = @_;
     my $content;
     my $template = $self->TEMPLATE;
     my $vars     = {
