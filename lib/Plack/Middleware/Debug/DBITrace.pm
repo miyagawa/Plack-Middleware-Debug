@@ -2,8 +2,6 @@ package Plack::Middleware::Debug::DBITrace;
 use 5.008;
 use strict;
 use warnings;
-use Template;
-use Plack::Util::Accessor qw(renderer);
 use parent qw(Plack::Middleware::Debug::Base);
 
 sub TEMPLATE {
@@ -22,10 +20,6 @@ sub TEMPLATE {
 </table>
 EOTMPL
 
-sub init {
-    my $self = shift;
-    $self->renderer(Template->new);
-}
 sub nav_title { 'DBI Trace' }
 
 sub process_request {

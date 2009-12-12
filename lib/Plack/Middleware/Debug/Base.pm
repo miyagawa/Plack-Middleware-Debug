@@ -2,7 +2,8 @@ package Plack::Middleware::Debug::Base;
 use 5.008;
 use strict;
 use warnings;
-use Plack::Util::Accessor qw(content);
+use Plack::Util::Accessor qw(content renderer);
+use Template;
 our $VERSION = '0.01';
 
 sub new {
@@ -14,6 +15,7 @@ sub new {
     } else {
         $self = bless {@_}, $class;
     }
+    $self->renderer(Template->new);
     $self->init;
     $self;
 }

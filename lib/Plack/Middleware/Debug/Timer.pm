@@ -3,9 +3,8 @@ use 5.008;
 use strict;
 use warnings;
 use Plack::Response;
-use Template;
 use Time::HiRes qw(gettimeofday tv_interval);
-use Plack::Util::Accessor qw(renderer start_time elapsed);
+use Plack::Util::Accessor qw(start_time elapsed);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
 
@@ -30,10 +29,6 @@ sub TEMPLATE {
 </table>
 EOTMPL
 
-sub init {
-    my $self = shift;
-    $self->renderer(Template->new);
-}
 sub nav_title { 'Timer' }
 
 sub nav_subtitle {

@@ -3,8 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 use Plack::Response;
-use Template;
-use Plack::Util::Accessor qw(renderer before_memory after_memory);
+use Plack::Util::Accessor qw(before_memory after_memory);
 use parent qw(Plack::Middleware::Debug::Base);
 
 sub TEMPLATE {
@@ -28,10 +27,6 @@ sub TEMPLATE {
 </table>
 EOTMPL
 
-sub init {
-    my $self = shift;
-    $self->renderer(Template->new);
-}
 sub nav_title { 'Memory' }
 
 sub nav_subtitle {

@@ -3,8 +3,6 @@ use 5.008;
 use strict;
 use warnings;
 use Plack::Response;
-use Template;
-use Plack::Util::Accessor qw(renderer);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.01';
 
@@ -34,10 +32,6 @@ sub TEMPLATE {
 </table>
 EOTMPL
 
-sub init {
-    my $self = shift;
-    $self->renderer(Template->new);
-}
 sub nav_title { 'Response' }
 
 sub format_headers {
