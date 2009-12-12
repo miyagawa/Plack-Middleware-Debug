@@ -122,7 +122,7 @@ sub call {
             my $res     = shift;
             my %headers = @{ $res->[1] };
             if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
-                for my $panel (@{ $self->panels }) {
+                for my $panel (reverse @{ $self->panels }) {
                     $panel->process_response($res, $env);
                 }
                 my $vars = {
@@ -172,6 +172,20 @@ information about the current request and response. The information is
 generated only for responses with a status of 200 (C<OK>) and a
 C<Content-Type> of C<text/html> and is embedded in the HTML that is sent back
 to the browser.
+
+To enable the middleware, just use L<Plack::Builder> as usual in your C<.psgi>
+file:
+
+    use Plack::Builder;
+
+    builder {
+        enable 'Debug' qw(DBITrace PerlConfig);
+        $app;
+    };
+
+If you pass a list of panel base names to the C<enable()> call, only those
+panels will be enabled. If you don't pass an argument, the default list of
+panels - Environment, Response, Timer and Memory - will be enabled.
 
 =head1 PANELS
 
