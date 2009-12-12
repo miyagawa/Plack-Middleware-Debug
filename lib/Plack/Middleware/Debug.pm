@@ -85,7 +85,7 @@ sub prepare_app {
     my @panels;
     for my $package (
         @{  $self->panels
-              || [qw(Environment Response Timer Memory PerlConfig ModuleVersions)]
+              || [qw(Environment Response Timer Memory)]
         }
       ) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
