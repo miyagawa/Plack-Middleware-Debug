@@ -84,7 +84,10 @@ sub prepare_app {
       try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
     my @panels;
     for my $package (
-        @{ $self->panels || [qw(Environment Response Timer PerlConfig)] }) {
+        @{  $self->panels
+              || [qw(Environment Response Timer PerlConfig ModuleVersions)]
+        }
+      ) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
         push @panels, $panel_class->new;
     }

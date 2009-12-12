@@ -12,6 +12,8 @@ requires 'Plack';
 requires 'Template';
 requires 'Template::Plugin::Dump';
 requires 'File::ShareDir', '1.00';
+feature 'Module versions panel', - default => 1,
+    'Module::Versions' => '0.01';
 test_requires 'Test::More' => '0.70';
 extra_tests;
 author_requires 'ShipIt';
