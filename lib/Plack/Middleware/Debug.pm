@@ -113,7 +113,7 @@ sub call {
             }
             my $vars = {
                 panels   => $self->panels,
-                BASE_URL => '',
+                BASE_URL => $env->{SCRIPT_NAME},
             };
             my $content;
             my $template = $self->TEMPLATE;
