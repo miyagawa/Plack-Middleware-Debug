@@ -7,12 +7,6 @@ use Text::MicroTemplate;
 use Data::Dump;
 our $VERSION = '0.01';
 
-sub vardump {
-    my $scalar = shift;
-    return $scalar unless ref $scalar;
-    Data::Dump::dump($scalar);
-}
-
 sub new {
     my $proto = shift;
     my $class = ref $proto || $proto;
@@ -44,6 +38,12 @@ sub title {
     $name;
 }
 sub nav_subtitle { '' }
+
+sub vardump {
+    my $scalar = shift;
+    return $scalar unless ref $scalar;
+    Data::Dump::dump($scalar);
+}
 
 sub renderer_vars {
     my %vars = (
@@ -113,13 +113,49 @@ Plack::Middleware::Debug::Base - Base class for Debug panels
 
 =head1 SYNOPSIS
 
-    Plack::Middleware::Debug::Base->new;
+# None. You shouldn't need to use this class yourself.
 
 =head1 DESCRIPTION
+
+This is the base class for panels.
 
 =head1 METHODS
 
 =over 4
+
+=item C<new>
+
+Constructs a new object and calls C<init()>.
+
+=item C<init>
+
+Called by C<new()>, this method is empty in this class, but can be overridden
+by subclasses.
+
+=item C<should_run>
+
+When a panel class is loaded by L<Plack::Middleware::Debug>, its
+C<should_run()> class method is called to see whether that panel wants to be
+included in every request and response. For example, the panel might declide
+to be run if some prerequisite module cannot be loaded.
+
+This method defaults to C<1> in this base class.
+
+=item C<process_request>
+
+The debug middleware calls all enabled panels when a request has arrived. The
+first and only argument of this method is the environment hash. In this base
+class it is an empty method. Not every panel will need to override it; some
+might only need to override C<process_response()>.
+
+=item C<process_response>
+
+The debug middleware calls all enabled panels when a response has arrived. The
+method is called with the response array first and the environment hash
+second. In this base class it is an empty method. Not every panel will need to
+override it; some might only need to override C<process_request()>.
+
+=item C<dom_id>
 
 =back
 
