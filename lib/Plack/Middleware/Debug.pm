@@ -10,6 +10,7 @@ use Template;
 use Try::Tiny;
 use parent qw(Plack::Middleware);
 our $VERSION = '0.01';
+
 sub TEMPLATE {
     <<'EOTMPL' }
 <script type="text/javascript" charset="utf-8">
@@ -79,58 +80,56 @@ EOTMPL
 
 sub prepare_app {
     my $self = shift;
-
-    my $root = try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
-
+    my $root =
+      try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
     my @panels;
-    for my $package (@{ $self->panels || [ qw(Environment Response Timer) ] }) {
+    for my $package (
+        @{ $self->panels || [qw(Environment Response Timer PerlConfig)] }) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
         push @panels, $panel_class->new;
     }
     $self->panels(\@panels);
     $self->renderer(Template->new);
-    $self->files( Plack::App::File->new(root => $root) );
+    $self->files(Plack::App::File->new(root => $root));
 }
 
 sub call {
     my ($self, $env) = @_;
-
     if ($env->{PATH_INFO} =~ m!^/debug_toolbar!) {
         return $self->files->call($env);
     }
-
     for my $panel (@{ $self->panels }) {
         $panel->process_request($env);
     }
-    my $res     = $self->app->($env);
-
-    $self->response_cb($res, sub {
-        my $res = shift;
-        my %headers = @{ $res->[1] };
-        if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
-            for my $panel (@{ $self->panels }) {
-                $panel->process_response($res);
+    my $res = $self->app->($env);
+    $self->response_cb(
+        $res,
+        sub {
+            my $res     = shift;
+            my %headers = @{ $res->[1] };
+            if ($res->[0] == 200 && $headers{'Content-Type'} eq 'text/html') {
+                for my $panel (@{ $self->panels }) {
+                    $panel->process_response($res);
+                }
+                my $vars = {
+                    panels   => $self->panels,
+                    BASE_URL => $env->{SCRIPT_NAME},
+                };
+                my $content;
+                my $template = $self->TEMPLATE;
+                $self->renderer->process(\$template, $vars, \$content)
+                  || die $self->renderer->error;
+                return sub {
+                    my $chunk = shift;
+                    return unless defined $chunk;
+                    $chunk =~ s!(?=</body>)!$content!i;
+                    return $chunk;
+                };
             }
-            my $vars = {
-                panels   => $self->panels,
-                BASE_URL => $env->{SCRIPT_NAME},
-            };
-            my $content;
-            my $template = $self->TEMPLATE;
-            $self->renderer->process(\$template, $vars, \$content)
-                || die $self->renderer->error;
-
-            return sub {
-                my $chunk = shift;
-                return unless defined $chunk;
-                $chunk =~ s!(?=</body>)!$content!i;
-                return $chunk;
-            };
+            $res;
         }
-        $res;
-    });
+    );
 }
-
 1;
 __END__
 
