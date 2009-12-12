@@ -108,20 +108,18 @@ sub call {
             my $template = $self->TEMPLATE;
             $self->renderer->process(\$template, $vars, \$content)
                 || die $self->renderer->error;
-            $self->inject($res, $content);
+
+            return sub {
+                my $chunk = shift;
+                return unless defined $chunk;
+                $chunk =~ s!(?=</body>)!$content!i;
+                return $chunk;
+            };
         }
         $res;
     });
 }
 
-sub inject {
-    my ($self, $res, $content) = @_;
-
-    # FIXME How does this work if $res->[2] is an IO::Handle-like object?
-    for (@{ $res->[2] }) {
-        s!(?=</body>)!$content!i;
-    }
-}
 1;
 __END__
 
