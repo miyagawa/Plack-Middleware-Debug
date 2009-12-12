@@ -38,7 +38,12 @@ sub nav_title { 'Timer' }
 
 sub nav_subtitle {
     my $self = shift;
-    $self->elapsed;
+    $self->format_elapsed;
+}
+
+sub format_elapsed {
+    my $self = shift;
+    sprintf '%s s', $self->elapsed;
 }
 
 sub format_time {
@@ -64,7 +69,7 @@ sub process_response {
         headers => [
             Start   => $self->format_time($self->start_time),
             End     => $self->format_time($end_time),
-            Elapsed => $self->elapsed
+            Elapsed => $self->format_elapsed,
         ],
     };
     $self->renderer->process(\$template, $vars, \$content)
