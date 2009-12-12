@@ -43,7 +43,9 @@ sub nav_subtitle {
 
 sub format_time {
     my ($self, $time) = @_;
-    sprintf '%s.%s', @$time;
+    my ($sec, $min, $hour, $mday, $mon, $year) = (localtime($time->[0]));
+    sprintf "%04d.%02d.%02d %02d:%02d:%02d.%d", $year + 1900, $mon + 1, $mday,
+      $hour, $min, $sec, $time->[1];
 }
 
 sub process_request {
