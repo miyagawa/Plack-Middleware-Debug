@@ -3,17 +3,17 @@ use 5.008;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.01';
 
 sub TEMPLATE {
     <<'EOTMPL' }
 <table>
     <tbody>
-        [% FOREACH line IN dump.split("\n") %]
-            <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
-                <td>[% line | html %]</td>
+% my $i;
+% for my $line (@{$_[0]->{dump}}) {
+            <tr class="<%= ++$i % 2 ? 'djDebugEven' : 'djDebugOdd' %>">
+                <td><%= $line %></td>
             </tr>
-        [% END %]
+% }
     </tbody>
 </table>
 EOTMPL
@@ -36,7 +36,7 @@ sub process_response {
         my $dump = $env->{'plack.debug.dbi.output'};
         $self->content(
             $self->render(
-                $self->TEMPLATE, { dump => $$dump }
+                $self->TEMPLATE, { dump => [ split /\n/ => $$dump ] }
             )
         );
     }

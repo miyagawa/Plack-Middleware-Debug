@@ -6,74 +6,77 @@ use File::ShareDir;
 use Plack::App::File;
 use Plack::Util::Accessor qw(panels renderer files);
 use Plack::Util;
-use Template;
+use Text::MicroTemplate;
 use Try::Tiny;
 use parent qw(Plack::Middleware);
 our $VERSION = '0.01';
 
 sub TEMPLATE {
     <<'EOTMPL' }
+% my $stash = $_[0];
 <script type="text/javascript" charset="utf-8">
 	// When jQuery is sourced, it's going to overwrite whatever might be in the
 	// '$' variable, so store a reference of it in a temporary variable...
 	var _$ = window.$;
 	if (typeof jQuery == 'undefined') {
-		var jquery_url = '[% BASE_URL %]/debug_toolbar/jquery.js';
+		var jquery_url = '<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js';
 		document.write(unescape('%3Cscript src="' + jquery_url + '" type="text/javascript"%3E%3C/script%3E'));
 	}
 </script>
-<script type="text/javascript" src="[% BASE_URL %]/debug_toolbar/toolbar.min.js"></script>
+<script type="text/javascript" src="<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 	// Now that jQuery is done loading, put the '$' variable back to what it was...
 	var $ = _$;
 </script>
 <style type="text/css">
-	@import url([% BASE_URL %]/debug_toolbar/toolbar.min.css);
+	@import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
 </style>
 <div id="djDebug">
 	<div style="display:none;" id="djDebugToolbar">
 		<ul id="djDebugPanelList">
-			[% IF panels %]
+% if ($stash->{panels}) {
 			<li><a id="djHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
-			[% ELSE %]
+% } else {
 			<li id="djDebugButton">DEBUG</li>
-			[% END %]
-			[% FOR panel IN panels %]
+% }
+% for my $panel (@{$stash->{panels}}) {
 				<li>
-					[% IF panel.content %]
-						<a href="[% panel.url %]" title="[% panel.title %]" class="[% panel.dom_id %]">
-					[% ELSE %]
+% if ($panel->content) {
+						<a href="<%= $panel->url %>" title="<%= $panel->title %>" class="<%= $panel->dom_id %>">
+% } else {
 					    <div class="contentless">
-					[% END %]
-					[% panel.nav_title %]
-                    [% IF panel.nav_subtitle %]<br><small>[% panel.nav_subtitle %]</small>[% END %]
-					[% IF panel.content %]
-						</a>
-					[% ELSE %]
-					    </div>
-					[% END %]
+% }
+					<%= $panel->nav_title %>
+% if ($panel->nav_subtitle) {
+					<br><small><%= $panel->nav_subtitle %></small>
+% }
+% if ($panel->content) {
+					</a>
+% } else {
+					</div>
+% }
 				</li>
-			[% END %]
+% } # end for
 		</ul>
 	</div>
 	<div style="display:none;" id="djDebugToolbarHandle">
 		<a title="Show Toolbar" id="djShowToolBarButton" href="#">&laquo;</a>
 	</div>
-	[% FOR panel IN panels %]
-		[% IF panel.content %]
-			<div id="[% panel.dom_id %]" class="panelContent">
+% for my $panel (@{$stash->{panels}}) {
+% if ($panel->content) {
+			<div id="<%= $panel->dom_id %>" class="panelContent">
 				<div class="djDebugPanelTitle">
 					<a href="" class="djDebugClose">Close</a>
-					<h3>[% panel.title %]</h3>
+					<h3><% $panel->title %></h3>
 				</div>
 				<div class="djDebugPanelContent">
 				    <div class="scroll">
-				        [% panel.content %]
+				        <%= Text::MicroTemplate::encoded_string($panel->content) %>
 				    </div>
 				</div>
 			</div>
-		[% END %]
-	[% END %]
+% }
+% } # end for
 	<div id="djDebugWindow" class="panelContent"></div>
 </div>
 EOTMPL
@@ -93,7 +96,14 @@ sub prepare_app {
         push @panels, $panel_class->new;
     }
     $self->panels(\@panels);
-    $self->renderer(Template->new);
+    $self->renderer(
+        Text::MicroTemplate->new(
+            template => $self->TEMPLATE,
+            tag_start => '<%',
+            tag_end => '%>',
+            line_start => '%',
+        )->build
+    );
     $self->files(Plack::App::File->new(root => $root));
 }
 
@@ -119,10 +129,7 @@ sub call {
                     panels   => $self->panels,
                     BASE_URL => $env->{SCRIPT_NAME},
                 };
-                my $content;
-                my $template = $self->TEMPLATE;
-                $self->renderer->process(\$template, $vars, \$content)
-                  || die $self->renderer->error;
+                my $content = $self->renderer->($vars);
                 return sub {
                     my $chunk = shift;
                     return unless defined $chunk;
