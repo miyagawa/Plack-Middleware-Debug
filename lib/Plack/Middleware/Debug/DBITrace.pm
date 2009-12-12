@@ -8,7 +8,7 @@ sub TEMPLATE {
     <<'EOTMPL' }
 <table>
     <tbody>
-        [% FOREACH line = dump %]
+        [% FOREACH line IN dump.split("\n") %]
             <tr class="[% cycle('djDebugEven' 'djDebugOdd') %]">
                 <td>[% line | html %]</td>
             </tr>
@@ -35,7 +35,7 @@ sub process_response {
         my $dump = $env->{'plack.debug.dbi.output'};
         $self->content(
             $self->render(
-                $self->TEMPLATE, { dump => [ split /\n/ => $$dump ] }
+                $self->TEMPLATE, { dump => $$dump }
             )
         );
     }
