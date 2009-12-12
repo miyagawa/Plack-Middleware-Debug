@@ -41,7 +41,6 @@ sub process_request {
     my $template = $self->TEMPLATE;
     my $modules = Module::Versions->HASH;
     $_ = $_->{VERSION} for values %$modules;
-    use Data::Dumper; warn Dumper $modules;
     my $vars     = {
         $self->renderer_vars,
         modules   => $modules,
