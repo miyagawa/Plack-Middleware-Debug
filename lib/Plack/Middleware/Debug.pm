@@ -74,17 +74,16 @@ sub TEMPLATE {
 </div>
 EOTMPL
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
+sub prepare_app {
+    my $self = shift;
+
     my @panels;
-    for my $package (@{ $_[0]{panels} || [] }) {
+    for my $package (@{ $self->panels || [ qw(Environment Response Timer) ] }) {
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
         push @panels, $panel_class->new;
     }
     $self->panels(\@panels);
     $self->renderer(Template->new);
-    $self;
 }
 
 sub call {
