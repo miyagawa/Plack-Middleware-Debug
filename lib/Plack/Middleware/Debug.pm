@@ -120,6 +120,11 @@ sub call {
             my %headers = @{ $res->[1] };
             if ($res->[0] == 200
                 && index($headers{'Content-Type'}, 'text/html') != -1) {
+
+                # After injecting the content, the Content-Length will not be
+                # right anymore, so the browser might cut off the page.
+                Plack::Util::header_remove($res->[1], 'Content-Length');
+
                 for my $panel (reverse @{ $self->panels }) {
                     $panel->process_response($res, $env);
                 }
@@ -169,7 +174,9 @@ The debug middleware offers a configurable set of panels that displays
 information about the current request and response. The information is
 generated only for responses with a status of 200 (C<OK>) and a
 C<Content-Type> that contains C<text/html> and is embedded in the HTML that is
-sent back to the browser.
+sent back to the browser. Also the code is injected directly before the C<<
+</body> >> tag so if there is no such tag, the information will not be
+injected.
 
 To enable the middleware, just use L<Plack::Builder> as usual in your C<.psgi>
 file:
@@ -177,7 +184,7 @@ file:
     use Plack::Builder;
 
     builder {
-        enable 'Debug' panels => [ qw(DBITrace PerlConfig) ];
+        enable 'Debug', panels => [ qw(DBITrace PerlConfig) ];
         $app;
     };
 
