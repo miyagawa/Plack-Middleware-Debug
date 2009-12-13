@@ -45,21 +45,6 @@ sub vardump {
     Data::Dump::dump($scalar);
 }
 
-sub renderer_vars {
-    my %vars = (
-        cycle => sub {
-            our @cycle;
-            @cycle = @_ unless @cycle;
-            our $pointer;
-            $pointer ||= 0;
-            my $result = $cycle[$pointer];
-            $pointer = ($pointer + 1) % scalar(@cycle);
-            $result;
-        }
-    );
-    wantarray ? %vars : \%vars;
-}
-
 sub render {
     my ($self, $template, $vars) = @_;
     my $mt = Text::MicroTemplate->new(
@@ -68,7 +53,7 @@ sub render {
         tag_end => '%>',
         line_start => '%',
     )->build;
-    my $out = $mt->({ $self->renderer_vars, %$vars });
+    my $out = $mt->($vars);
     $out;
 }
 
