@@ -117,13 +117,9 @@ sub call {
         $res,
         sub {
             my $res     = shift;
-            my %headers = @{ $res->[1] };
+            my $headers = Plack::Util::headers($res->[1]);
             if ($res->[0] == 200
-                && index($headers{'Content-Type'}, 'text/html') != -1) {
-
-                # After injecting the content, the Content-Length will not be
-                # right anymore, so the browser might cut off the page.
-                Plack::Util::header_remove($res->[1], 'Content-Length');
+                && $headers->get('Content-Type') =~ m!^text/html!) {
 
                 for my $panel (reverse @{ $self->panels }) {
                     $panel->process_response($res, $env);
@@ -133,6 +129,9 @@ sub call {
                     BASE_URL => $env->{SCRIPT_NAME},
                 };
                 my $content = $self->renderer->($vars);
+                if (my $cl = $headers->get('Content-Length')) {
+                    $headers->set('Content-Length' => $cl + length $content);
+                }
                 return sub {
                     my $chunk = shift;
                     return unless defined $chunk;
