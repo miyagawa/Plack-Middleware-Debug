@@ -14,6 +14,9 @@ requires 'Data::Dump';
 requires 'File::ShareDir', '1.00';
 feature 'Module versions panel', - default => 1,
     'Module::Versions' => '0.01';
+feature 'Catalyst log panel', - default => 1,
+    'Catalyst' => '5.80',
+    'Class::Method::Modifiers' => '1.05';
 test_requires 'Test::More' => '0.70';
 extra_tests;
 author_requires 'ShipIt';

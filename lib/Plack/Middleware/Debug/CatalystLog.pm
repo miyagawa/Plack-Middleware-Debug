@@ -10,26 +10,21 @@ our $wrap    = wrap 'Catalyst::Log::_log',
   pre => sub { our $self = $_[0] },
   post => sub { our $self; our $log = $self->_body };
 
-sub TEMPLATE {
-    <<'EOTMPL' }
-<table>
-    <tbody>
-% my $i;
-% for my $line (split "\n", $_[0]->{string}) {
-            <tr class="<%= ++$i % 2 ? 'plDebugEven' : 'plDebugOdd' %>">
-                <td><%= $line %></td>
-            </tr>
-% }
-    </tbody>
-</table>
-EOTMPL
+#use Class::Method::Modifiers;
+#around 'Catalyst::Log::_log' => sub {
+#    my $orig = shift;
+#    my $self = shift;
+#    $orig->($self, @_);
+#    our $log = $self->_body;
+#};
+
 sub nav_title { 'Catalyst Log' }
 
 sub process_response {
     my ($self, $res, $env) = @_;
     our $log;
     return unless $log;
-    $self->content($self->render($self->TEMPLATE, { string => $log }));
+    $self->content("<pre>$log</pre>");
 }
 1;
 __END__

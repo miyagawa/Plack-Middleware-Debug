@@ -130,8 +130,8 @@
 }
 
 #plDebug pre {
-	background-color:#ffffff;
 	overflow:auto;
+    font-family:"Courier New","Courier",monospace;
 }
 
 #plDebug tr.plDebugOdd {
@@ -200,7 +200,6 @@
 	border-collapse:collapse;
 	width:100%;
 	background-color:#fff;
-	display:block;
 	margin-top:0.8em;
 	overflow: auto;
 }

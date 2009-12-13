@@ -15,69 +15,69 @@ sub TEMPLATE {
     <<'EOTMPL' }
 % my $stash = $_[0];
 <script type="text/javascript" charset="utf-8">
-	// When jQuery is sourced, it's going to overwrite whatever might be in the
-	// '$' variable, so store a reference of it in a temporary variable...
-	var _$ = window.$;
-	if (typeof jQuery == 'undefined') {
-		var jquery_url = '<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js';
-		document.write(unescape('%3Cscript src="' + jquery_url + '" type="text/javascript"%3E%3C/script%3E'));
-	}
+    // When jQuery is sourced, it's going to overwrite whatever might be in the
+    // '$' variable, so store a reference of it in a temporary variable...
+    var _$ = window.$;
+    if (typeof jQuery == 'undefined') {
+        var jquery_url = '<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js';
+        document.write(unescape('%3Cscript src="' + jquery_url + '" type="text/javascript"%3E%3C/script%3E'));
+    }
 </script>
 <script type="text/javascript" src="<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.js"></script>
 <script type="text/javascript" charset="utf-8">
-	// Now that jQuery is done loading, put the '$' variable back to what it was...
-	var $ = _$;
+    // Now that jQuery is done loading, put the '$' variable back to what it was...
+    var $ = _$;
 </script>
 <style type="text/css">
-	@import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
+    @import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
 </style>
 <div id="plDebug">
-	<div style="display:none;" id="plDebugToolbar">
-		<ul id="plDebugPanelList">
+    <div style="display:none;" id="plDebugToolbar">
+        <ul id="plDebugPanelList">
 % if ($stash->{panels}) {
-			<li><a id="plHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
+            <li><a id="plHideToolBarButton" href="#" title="Hide Toolbar">Hide &raquo;</a></li>
 % } else {
-			<li id="plDebugButton">DEBUG</li>
+            <li id="plDebugButton">DEBUG</li>
 % }
 % for my $panel (@{$stash->{panels}}) {
-				<li>
+                <li>
 % if ($panel->content) {
-						<a href="<%= $panel->url %>" title="<%= $panel->title %>" class="<%= $panel->dom_id %>">
+                        <a href="<%= $panel->url %>" title="<%= $panel->title %>" class="<%= $panel->dom_id %>">
 % } else {
-					    <div class="contentless">
+                        <div class="contentless">
 % }
-					<%= $panel->nav_title %>
+                    <%= $panel->nav_title %>
 % if ($panel->nav_subtitle) {
-					<br><small><%= $panel->nav_subtitle %></small>
+                    <br><small><%= $panel->nav_subtitle %></small>
 % }
 % if ($panel->content) {
-					</a>
+                    </a>
 % } else {
-					</div>
+                    </div>
 % }
-				</li>
+                </li>
 % } # end for
-		</ul>
-	</div>
-	<div style="display:none;" id="plDebugToolbarHandle">
-		<a title="Show Toolbar" id="plShowToolBarButton" href="#">&laquo;</a>
-	</div>
+        </ul>
+    </div>
+    <div style="display:none;" id="plDebugToolbarHandle">
+        <a title="Show Toolbar" id="plShowToolBarButton" href="#">&laquo;</a>
+    </div>
 % for my $panel (@{$stash->{panels}}) {
 % if ($panel->content) {
-			<div id="<%= $panel->dom_id %>" class="panelContent">
-				<div class="plDebugPanelTitle">
-					<a href="" class="plDebugClose">Close</a>
-					<h3><%= $panel->title %></h3>
-				</div>
-				<div class="plDebugPanelContent">
-				    <div class="scroll">
-				        <%= Text::MicroTemplate::encoded_string($panel->content) %>
-				    </div>
-				</div>
-			</div>
+            <div id="<%= $panel->dom_id %>" class="panelContent">
+                <div class="plDebugPanelTitle">
+                    <a href="" class="plDebugClose">Close</a>
+                    <h3><%= $panel->title %></h3>
+                </div>
+                <div class="plDebugPanelContent">
+                    <div class="scroll">
+                        <%= Text::MicroTemplate::encoded_string($panel->content) %>
+                    </div>
+                </div>
+            </div>
 % }
 % } # end for
-	<div id="plDebugWindow" class="panelContent"></div>
+    <div id="plDebugWindow" class="panelContent"></div>
 </div>
 EOTMPL
 
