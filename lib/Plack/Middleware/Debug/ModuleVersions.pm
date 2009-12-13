@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Module::Versions;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 sub nav_title { 'Module Versions' }
 
 sub process_request {

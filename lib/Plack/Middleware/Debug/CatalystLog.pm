@@ -5,7 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 use Catalyst::Log;
 use Hook::LexWrap;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $wrap    = wrap 'Catalyst::Log::_log',
   pre => sub { our $self = $_[0] },
   post => sub { our $self; our $log = $self->_body };
