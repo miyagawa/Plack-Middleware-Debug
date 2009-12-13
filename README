@@ -21,8 +21,8 @@ DESCRIPTION
     The debug middleware offers a configurable set of panels that displays
     information about the current request and response. The information is
     generated only for responses with a status of 200 ("OK") and a
-    "Content-Type" of "text/html" and is embedded in the HTML that is sent
-    back to the browser.
+    "Content-Type" that contains "text/html" and is embedded in the HTML
+    that is sent back to the browser.
 
     To enable the middleware, just use Plack::Builder as usual in your
     ".psgi" file:
@@ -30,14 +30,14 @@ DESCRIPTION
         use Plack::Builder;
 
         builder {
-            enable 'Debug' qw(DBITrace PerlConfig);
+            enable 'Debug' panels => [ qw(DBITrace PerlConfig) ];
             $app;
         };
 
     If you pass a list of panel base names to the "enable()" call, only
     those panels will be enabled. If you don't pass an argument, the default
-    list of panels - Environment, Response, Timer and Memory - will be
-    enabled.
+    list of panels - "Environment", "Response", "Timer" and "Memory" - will
+    be enabled.
 
 PANELS
     "DBITrace"
