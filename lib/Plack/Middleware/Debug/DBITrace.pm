@@ -10,7 +10,7 @@ sub TEMPLATE {
 <table>
     <tbody>
 % my $i;
-% for my $line (@{$_[0]->{dump}}) {
+% for my $line (split "\n", $_[0]->{dump}) {
             <tr class="<%= ++$i % 2 ? 'plDebugEven' : 'plDebugOdd' %>">
                 <td><%= $line %></td>
             </tr>
@@ -18,6 +18,7 @@ sub TEMPLATE {
     </tbody>
 </table>
 EOTMPL
+sub title     { 'DBI Trace' }
 sub nav_title { 'DBI Trace' }
 
 sub process_request {
@@ -37,7 +38,7 @@ sub process_response {
         my $dump = $env->{'plack.debug.dbi.output'};
         $self->content(
             $self->render(
-                $self->TEMPLATE, { dump => [ split /\n/ => $$dump ] }
+                $self->TEMPLATE, { dump => $$dump }
             )
         );
     }
