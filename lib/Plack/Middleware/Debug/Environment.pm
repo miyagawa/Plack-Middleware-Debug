@@ -6,8 +6,8 @@ use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.02';
 sub nav_title { 'Environment' }
 
-sub process_request {
-    my ($self, $env) = @_;
+sub process_response {
+    my ($self, $res, $env) = @_;
     $self->content($self->render_hash($env));
 }
 1;
