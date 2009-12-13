@@ -55,6 +55,8 @@ and github infrastructure.
 
 Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
 
+Tatsuhiko Miyagawa, C<< <miyagawa@bulknews.net> >>
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright 2009 by Marcel GrE<uuml>nauer

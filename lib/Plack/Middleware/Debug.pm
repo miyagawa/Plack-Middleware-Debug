@@ -146,7 +146,7 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Debug - display stats about the current request/response
+Plack::Middleware::Debug - display information about the current request/response
 
 =head1 SYNOPSIS
 
@@ -191,36 +191,36 @@ panels - Environment, Response, Timer and Memory - will be enabled.
 
 =over 4
 
-=item DBITrace
+=item C<DBITrace>
 
 Display DBI trace information. See L<Plack::Middleware::Debug::DBITrace>.
 
-=item Environment
+=item C<Environment>
 
 Displays the PSGI environment from the request. See
 L<Plack::Middleware::Debug::Environment>.
 
-=item Memory
+=item C<Memory>
 
 Displays memory usage before the request and after the response. See
 L<Plack::Middleware::Debug::Memory>.
 
-=item ModuleVersions
+=item C<ModuleVersions>
 
 Displays the loaded modules and their versions. See
 L<Plack::Middleware::Debug::ModuleVersions>.
 
-=item PerlConfig
+=item C<PerlConfig>
 
 Displays the configuration information of the Perl interpreter itself. See
 L<Plack::Middleware::Debug::PerlConfig>
 
-=item Response
+=item C<Response>
 
 Displays the status code and response headers. See
 L<Plack::Middleware::Debug::Response>.
 
-=item Timer
+=item C<Timer>
 
 Displays how long the request took. See L<Plack::Middleware::Debug::Timer>.
 
@@ -250,6 +250,8 @@ and github infrastructure.
 =head1 AUTHORS
 
 Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
+
+Tatsuhiko Miyagawa, C<< <miyagawa@bulknews.net> >>
 
 =head1 COPYRIGHT AND LICENSE
 

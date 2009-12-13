@@ -38,7 +38,6 @@ lib/Plack/Middleware/Debug/Response.pm
 lib/Plack/Middleware/Debug/Timer.pm
 Makefile.PL
 MANIFEST			This list of files
-media/debug_toolbar/Makefile
 META.yml
 README
 README.mkdn
@@ -46,8 +45,8 @@ share/debug_toolbar/back.png
 share/debug_toolbar/back_hover.png
 share/debug_toolbar/close.png
 share/debug_toolbar/close_hover.png
-share/debug_toolbar/plack_debug_vertical.png
 share/debug_toolbar/indicator.png
+share/debug_toolbar/information.gif
 share/debug_toolbar/jquery.cookie.js
 share/debug_toolbar/jquery.js
 share/debug_toolbar/panel_bg.png

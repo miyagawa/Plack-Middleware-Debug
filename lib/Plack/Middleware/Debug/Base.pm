@@ -136,7 +136,7 @@ by subclasses.
 
 When a panel class is loaded by L<Plack::Middleware::Debug>, its
 C<should_run()> class method is called to see whether that panel wants to be
-included in every request and response. For example, the panel might declide
+included in every request and response. For example, the panel might decide
 to be run if some prerequisite module cannot be loaded.
 
 This method defaults to C<1> in this base class.
@@ -193,6 +193,8 @@ and github infrastructure.
 =head1 AUTHORS
 
 Marcel GrE<uuml>nauer, C<< <marcel@cpan.org> >>
+
+Tatsuhiko Miyagawa, C<< <miyagawa@bulknews.net> >>
 
 =head1 COPYRIGHT AND LICENSE
 

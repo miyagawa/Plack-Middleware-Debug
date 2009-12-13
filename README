@@ -1,5 +1,5 @@
 NAME
-    Plack::Middleware::Debug - display stats about the current
+    Plack::Middleware::Debug - display information about the current
     request/response
 
 SYNOPSIS
@@ -40,31 +40,31 @@ DESCRIPTION
     enabled.
 
 PANELS
-    DBITrace
+    "DBITrace"
         Display DBI trace information. See
         Plack::Middleware::Debug::DBITrace.
 
-    Environment
+    "Environment"
         Displays the PSGI environment from the request. See
         Plack::Middleware::Debug::Environment.
 
-    Memory
+    "Memory"
         Displays memory usage before the request and after the response. See
         Plack::Middleware::Debug::Memory.
 
-    ModuleVersions
+    "ModuleVersions"
         Displays the loaded modules and their versions. See
         Plack::Middleware::Debug::ModuleVersions.
 
-    PerlConfig
+    "PerlConfig"
         Displays the configuration information of the Perl interpreter
         itself. See Plack::Middleware::Debug::PerlConfig
 
-    Response
+    "Response"
         Displays the status code and response headers. See
         Plack::Middleware::Debug::Response.
 
-    Timer
+    "Timer"
         Displays how long the request took. See
         Plack::Middleware::Debug::Timer.
 
@@ -91,6 +91,8 @@ AVAILABILITY
 
 AUTHORS
     Marcel Grünauer, "<marcel@cpan.org>"
+
+    Tatsuhiko Miyagawa, "<miyagawa@bulknews.net>"
 
 COPYRIGHT AND LICENSE
     Copyright 2009 by Marcel Grünauer
