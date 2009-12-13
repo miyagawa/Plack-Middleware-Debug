@@ -22,7 +22,9 @@ DESCRIPTION
     information about the current request and response. The information is
     generated only for responses with a status of 200 ("OK") and a
     "Content-Type" that contains "text/html" and is embedded in the HTML
-    that is sent back to the browser.
+    that is sent back to the browser. Also the code is injected directly
+    before the "</body>" tag so if there is no such tag, the information
+    will not be injected.
 
     To enable the middleware, just use Plack::Builder as usual in your
     ".psgi" file:
@@ -30,7 +32,7 @@ DESCRIPTION
         use Plack::Builder;
 
         builder {
-            enable 'Debug' panels => [ qw(DBITrace PerlConfig) ];
+            enable 'Debug', panels => [ qw(DBITrace PerlConfig) ];
             $app;
         };
 

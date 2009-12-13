@@ -29,6 +29,7 @@ inc/Test/More.pm
 INSTALL
 lib/Plack/Middleware/Debug.pm
 lib/Plack/Middleware/Debug/Base.pm
+lib/Plack/Middleware/Debug/CatalystLog.pm
 lib/Plack/Middleware/Debug/DBITrace.pm
 lib/Plack/Middleware/Debug/Environment.pm
 lib/Plack/Middleware/Debug/Memory.pm
