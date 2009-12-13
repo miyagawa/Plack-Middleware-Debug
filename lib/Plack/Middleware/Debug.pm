@@ -179,7 +179,7 @@ file:
     use Plack::Builder;
 
     builder {
-        enable 'Debug' qw(DBITrace PerlConfig);
+        enable 'Debug' panels => [ qw(DBITrace PerlConfig) ];
         $app;
     };
 
@@ -240,12 +240,13 @@ See perlmodinstall for information and options on installing Perl modules.
 =head1 AVAILABILITY
 
 The latest version of this module is available from the Comprehensive Perl
-Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
-site near you. Or see L<http://search.cpan.org/dist/Plack-Middleware-Debug/>.
+Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN site
+near you. Or see L<http://search.cpan.org/dist/Plack-Middleware-Debug/>.
 
-The development version lives at L<http://github.com/hanekomu/plack-middleware-debug/>.
-Instead of sending patches, please fork this project using the standard git
-and github infrastructure.
+The development version lives at
+L<http://github.com/hanekomu/plack-middleware-debug/>. Instead of sending
+patches, please fork this project using the standard git and github
+infrastructure.
 
 =head1 AUTHORS
 
