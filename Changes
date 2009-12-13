@@ -1,4 +1,9 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.02  Sun 2009.12.13 12:01:29 CET (Marcel Gruenauer <marcel@cpan.org>)
+     - For debug information to be sent, the Content-Type should contain
+       'text/html'; it's not necessary that it's equal to it. So 'text/html;
+       charset=utf-8' is ok as well (thanks tomyhero)
+
 0.01  Sun 2009.12.13 01:12:58 CET (Marcel Gruenauer <marcel@cpan.org>)
      - original version

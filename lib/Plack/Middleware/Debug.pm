@@ -9,7 +9,7 @@ use Plack::Util;
 use Text::MicroTemplate;
 use Try::Tiny;
 use parent qw(Plack::Middleware);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub TEMPLATE {
     <<'EOTMPL' }

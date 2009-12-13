@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Plack::Util::Accessor qw(before_memory after_memory);
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 sub nav_title { 'Memory' }
 
 sub nav_subtitle {

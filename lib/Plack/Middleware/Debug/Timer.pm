@@ -5,7 +5,7 @@ use warnings;
 use Time::HiRes qw(gettimeofday tv_interval);
 use Plack::Util::Accessor qw(start_time elapsed);
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 sub nav_title { 'Timer' }
 
 sub nav_subtitle {
