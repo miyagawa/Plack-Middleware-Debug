@@ -194,10 +194,26 @@ file:
         $app;
     };
 
-If you pass a list of panel base names to the C<enable()> call, only those
-panels will be enabled. If you don't pass an argument, the default list of
-panels - C<Environment>, C<Response>, C<Timer> and C<Memory> - will be
-enabled.
+The C<Debug> middleware takes an optional C<panels> argument whose value is
+expected to be a list of panel names. If given, only those panels will be
+enabled. If you don't pass a C<panels> argument, the default list of panels -
+C<Environment>, C<Response>, C<Timer> and C<Memory> - will be enabled.
+
+There is also the possiblity to pass arguments to the panels themselves. For
+example, the C<DBITrace> panel takes an optional C<level> argument to specify
+the desired trace level.
+
+To pass arguments to a panel, expand the panel name to an array reference
+whose first element is the panel name and whose remaining elements are
+key/value pairs to be passed to the panel. For example:
+
+    builder {
+        enable 'Debug', panels =>
+          [ qw(Environment Response Timer Memory),
+            [ 'DBITrace', level => 2 ]
+          ];
+        $app;
+    };
 
 =head1 PANELS
 
