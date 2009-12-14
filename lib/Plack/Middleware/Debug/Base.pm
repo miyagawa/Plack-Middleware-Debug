@@ -86,7 +86,8 @@ sub render_list_pairs {
 
 sub render_hash {
     my ($self, $hash) = @_;
-    $self->render($self->template_for_list_pairs, { list => [ %$hash ] });
+    my @hash = map { $_ => $hash->{$_} } sort keys %$hash;
+    $self->render($self->template_for_list_pairs, { list => \@hash });
 }
 
 1;
