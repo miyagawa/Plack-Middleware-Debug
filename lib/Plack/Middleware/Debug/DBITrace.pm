@@ -2,6 +2,7 @@ package Plack::Middleware::Debug::DBITrace;
 use 5.008;
 use strict;
 use warnings;
+use Plack::Util::Accessor qw(level);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.03';
 
@@ -17,15 +18,27 @@ my $template = __PACKAGE__->build_template(<<'EOTMPL');
     </tbody>
 </table>
 EOTMPL
+
+sub init {
+    my $self = shift;
+    $self->SUPER::init(@_);
+    $self->level(1) unless defined $self->level;
+}
+
 sub title     { 'DBI Trace' }
 sub nav_title { 'DBI Trace' }
+sub nav_subtitle {
+    my $self = shift;
+    sprintf 'Level %s', $self->level;
+}
 
 sub process_request {
     my ($self, $env) = @_;
     if (defined &DBI::trace) {
         $env->{'plack.debug.dbi.trace'} = DBI->trace;
         open my $fh, ">", \my $output;
-        DBI->trace("1,SQL", $fh);
+        my $level = $self->level;
+        DBI->trace("$level,SQL", $fh);
         $env->{'plack.debug.dbi.output'} = \$output;
     }
 }

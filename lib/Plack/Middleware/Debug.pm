@@ -86,11 +86,18 @@ sub prepare_app {
     my $root =
       try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
     my @panels;
-    for my $package (
+    for my $spec (
         @{ $self->panels || [qw(Environment Response Timer Memory)] }) {
+        my ($package, %args);
+        if (ref $spec eq 'ARRAY') {
+            $package = shift @$spec;
+            %args = @$spec;
+        } else {
+            $package = $spec;
+        }
         my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
         next unless $panel_class->should_run;
-        push @panels, $panel_class->new;
+        push @panels, $panel_class->new(%args);
     }
     $self->panels(\@panels);
     $self->renderer(
