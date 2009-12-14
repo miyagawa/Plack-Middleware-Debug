@@ -5,8 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.03';
 
-sub TEMPLATE {
-    <<'EOTMPL' }
+my $template = __PACKAGE__->build_template(<<'EOTMPL');
 <table>
     <tbody>
 % my $i;
@@ -36,11 +35,7 @@ sub process_response {
     if (defined(my $trace = $env->{'plack.debug.dbi.trace'})) {
         DBI->trace($trace);    # reset
         my $dump = $env->{'plack.debug.dbi.output'};
-        $self->content(
-            $self->render(
-                $self->TEMPLATE, { dump => $$dump }
-            )
-        );
+        $self->content( $self->render($template, { dump => $$dump }) );
     }
 }
 1;

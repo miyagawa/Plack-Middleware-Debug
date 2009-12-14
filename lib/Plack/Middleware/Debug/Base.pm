@@ -45,20 +45,22 @@ sub vardump {
     Data::Dump::dump($scalar);
 }
 
-sub render {
-    my ($self, $template, $vars) = @_;
-    my $mt = Text::MicroTemplate->new(
-        template => $template,
+sub build_template {
+    my $class = shift;
+    Text::MicroTemplate->new(
+        template => $_[0],
         tag_start => '<%',
         tag_end => '%>',
         line_start => '%',
     )->build;
-    my $out = $mt->($vars);
-    $out;
 }
 
-sub template_for_list_pairs {
-    <<'EOTMPL' }
+sub render {
+    my ($self, $template, $vars) = @_;
+    $template->($vars);
+}
+
+my $list_template = __PACKAGE__->build_template(<<'EOTMPL');
 <table>
     <thead>
         <tr>
@@ -81,13 +83,13 @@ EOTMPL
 
 sub render_list_pairs {
     my ($self, $list) = @_;
-    $self->render($self->template_for_list_pairs, { list => $list });
+    $self->render($list_template, { list => $list });
 }
 
 sub render_hash {
     my ($self, $hash) = @_;
     my @hash = map { $_ => $hash->{$_} } sort keys %$hash;
-    $self->render($self->template_for_list_pairs, { list => \@hash });
+    $self->render($list_template, { list => \@hash });
 }
 
 1;
