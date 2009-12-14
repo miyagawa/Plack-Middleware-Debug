@@ -41,8 +41,7 @@ sub nav_subtitle { '' }
 
 sub vardump {
     my $scalar = shift;
-    return $scalar unless ref $scalar;
-    Data::Dump::dump($scalar);
+    scalar Data::Dump::dump($scalar);
 }
 
 sub build_template {
