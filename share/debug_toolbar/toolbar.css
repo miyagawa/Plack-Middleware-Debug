@@ -131,7 +131,7 @@
 
 #plDebug pre {
 	overflow:auto;
-    font-family:"Courier New","Courier",monospace;
+    font-family:monospace,serif;
 }
 
 #plDebug tr.plDebugOdd {
