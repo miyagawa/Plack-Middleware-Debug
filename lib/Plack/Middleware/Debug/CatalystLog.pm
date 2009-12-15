@@ -11,7 +11,7 @@ my $psgi_env;
 install_modifier 'Catalyst::Log', 'around', '_log' => sub {
     my $orig = shift;
     my $self = shift;
-    $psgi_env->{'plack.middleware.catalyst_log'} = $self->_body;
+    $psgi_env->{'plack.middleware.catalyst_log'} .= "[$_[0]] $_[1]\n";
     $self->$orig(@_);
 };
 
