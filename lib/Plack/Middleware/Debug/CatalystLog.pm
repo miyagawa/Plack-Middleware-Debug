@@ -15,8 +15,6 @@ install_modifier 'Catalyst::Log', 'around', '_log' => sub {
     $self->$orig(@_);
 };
 
-sub nav_title { 'Catalyst Log' }
-
 sub process_request {
     my($self, $env) = @_;
     $psgi_env = $env;

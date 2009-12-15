@@ -26,7 +26,6 @@ sub init {
 }
 
 sub title     { 'DBI Trace' }
-sub nav_title { 'DBI Trace' }
 sub nav_subtitle {
     my $self = shift;
     sprintf 'Level %s', $self->level;

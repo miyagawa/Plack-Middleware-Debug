@@ -37,6 +37,10 @@ sub title {
     $name =~ s/(?<=[a-z])(?=[A-Z])/ /g;
     $name;
 }
+sub nav_title {
+    my $self = shift;
+    $self->title;
+}
 sub nav_subtitle { '' }
 
 sub vardump {

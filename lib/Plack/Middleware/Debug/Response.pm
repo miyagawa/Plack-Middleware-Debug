@@ -6,8 +6,6 @@ use parent qw(Plack::Middleware::Debug::Base);
 use HTTP::Headers;
 our $VERSION = '0.03';
 
-sub nav_title { 'Response' }
-
 sub format_headers {
     my ($self, $res) = @_;
     my $headers = HTTP::Headers->new;

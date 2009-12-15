@@ -1,9 +1,11 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
 0.03  Sun 2009.12.13 23:49:53 CET (Marcel Gruenauer <marcel@cpan.org>)
-     - First attempt at CatalystLog panel
-     - Added ability to pass arguments to panels
+     - added CatalystLog panel
+     - Added ability to pass arguments and objects to panels
      - DBITrace panel takes an optional 'level' argument (trace level)
+     - nav_title() defaults to title() now, so need to set it in most panels
+     - added documentation
      - various small bug fixes and improvements
 
 0.02  Sun 2009.12.13 12:01:29 CET (Marcel Gruenauer <marcel@cpan.org>)
