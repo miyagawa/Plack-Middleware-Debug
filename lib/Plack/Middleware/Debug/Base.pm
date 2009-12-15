@@ -45,6 +45,7 @@ sub nav_subtitle { '' }
 
 sub vardump {
     my $scalar = shift;
+    return '(undef)' unless defined $scalar;
     return "$scalar" unless ref $scalar;
     scalar Data::Dump::dump($scalar);
 }
