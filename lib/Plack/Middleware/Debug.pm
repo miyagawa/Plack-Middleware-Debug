@@ -351,7 +351,7 @@ of methods that the C<Debug> middleware expects a panel to have and provides
 some sensible defaults for others, so you only need to override what is
 specific to your custom panel.
 
-The panels' title - which appears at the top left when the panel is active -
+The panel's title - which appears at the top left when the panel is active -
 and its navigation title - which appears in the navigation bar on the right
 side - are set automatically from the panel's base name - C<Timer> in our
 case. This is a useful for default for us, so we don't need to override these
@@ -360,8 +360,8 @@ methods.
 The panels' navigation subtitle, which appears in the navigation bar
 underneath the panel title in smaller letters, is empty by default. For the
 C<Timer> panel, we would like to show the total time elapsed so the user can
-get the quick overview without having to activate the panel. So we override
-the C<nav_subtitle()> method.
+get a quick overview without having to activate the panel. So we override the
+C<nav_subtitle()> method.
 
 How do we know how much time elapsed for the request? We have to take the time
 when the request comes in, and again when the response goes out. So we
