@@ -4,27 +4,28 @@ use strict;
 use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 use Catalyst::Log;
-use Hook::LexWrap;
+use Class::Method::Modifiers qw(install_modifier);
 our $VERSION = '0.03';
-our $wrap    = wrap 'Catalyst::Log::_log',
-  pre => sub { our $self = $_[0] },
-  post => sub { our $self; our $log = $self->_body };
 
-#use Class::Method::Modifiers;
-#around 'Catalyst::Log::_log' => sub {
-#    my $orig = shift;
-#    my $self = shift;
-#    $orig->($self, @_);
-#    our $log = $self->_body;
-#};
+my $psgi_env;
+install_modifier 'Catalyst::Log', 'around', '_log' => sub {
+    my $orig = shift;
+    my $self = shift;
+    $psgi_env->{'plack.middleware.catalyst_log'} = $self->_body;
+    $self->$orig(@_);
+};
 
 sub nav_title { 'Catalyst Log' }
 
+sub process_request {
+    my($self, $env) = @_;
+    $psgi_env = $env;
+}
+
 sub process_response {
     my ($self, $res, $env) = @_;
-    our $log;
-    return unless $log;
-    $self->content("<pre>$log</pre>");
+    $self->content("<pre>$env->{'plack.middleware.catalyst_log'}</pre>");
+    $psgi_env = undef;
 }
 1;
 __END__
