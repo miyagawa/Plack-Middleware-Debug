@@ -86,18 +86,28 @@ sub prepare_app {
     my $root =
       try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
     my @panels;
-    for my $spec (
-        @{ $self->panels || [qw(Environment Response Timer Memory)] }) {
+    for my $spec (@{ $self->panels || [qw(Environment Response Timer Memory)] })
+    {
         my ($package, %args);
         if (ref $spec eq 'ARRAY') {
+
+            # [ 'PanelName', key1 => $value1, ... ]
             $package = shift @$spec;
-            %args = @$spec;
+            %args    = @$spec;
+            my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
+            next unless $panel_class->should_run;
+            push @panels, $panel_class->new(%args);
+        } elsif (ref $spec) {
+
+            # accept a panel object
+            push @panels, $spec;
         } else {
-            $package = $spec;
+
+            # not a ref, just a panel basename string
+            my $panel_class = Plack::Util::load_class($spec, __PACKAGE__);
+            next unless $panel_class->should_run;
+            push @panels, $panel_class->new;
         }
-        my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
-        next unless $panel_class->should_run;
-        push @panels, $panel_class->new(%args);
     }
     $self->panels(\@panels);
     $self->renderer(
@@ -125,9 +135,8 @@ sub call {
         sub {
             my $res     = shift;
             my $headers = Plack::Util::headers($res->[1]);
-            if ($res->[0] == 200
+            if (   $res->[0] == 200
                 && $headers->get('Content-Type') =~ m!^text/html!) {
-
                 for my $panel (reverse @{ $self->panels }) {
                     $panel->process_response($res, $env);
                 }
