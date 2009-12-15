@@ -24,7 +24,10 @@ sub process_request {
 
 sub process_response {
     my ($self, $res, $env) = @_;
-    $self->content("<pre>$env->{'plack.middleware.catalyst_log'}</pre>");
+
+    my $log = delete $env->{'plack.middleware.catalyst_log'};
+    $self->content("<pre>$log</pre>");
+
     $psgi_env = undef;
 }
 1;

@@ -46,9 +46,9 @@ YUICOMPRESS = ~/bin/yuicompressor.jar
 MEDIADIR = share/debug_toolbar
 
 yuicompressor:
-\tjava -jar ~/bin/yuicompressor.jar \$(MEDIADIR)/toolbar.js > \$(MEDIADIR)/toolbar.min.js
-\tjava -jar ~/bin/yuicompressor.jar \$(MEDIADIR)/jquery.cookie.js >> \$(MEDIADIR)/toolbar.min.js
-\tjava -jar ~/bin/yuicompressor.jar --type css \$(MEDIADIR)/toolbar.css > \$(MEDIADIR)/toolbar.min.css
+\tjava -jar \$(YUICOMPRESS) \$(MEDIADIR)/toolbar.js > \$(MEDIADIR)/toolbar.min.js
+\tjava -jar \$(YUICOMPRESS) \$(MEDIADIR)/jquery.cookie.js >> \$(MEDIADIR)/toolbar.min.js
+\tjava -jar \$(YUICOMPRESS) --type css \$(MEDIADIR)/toolbar.css > \$(MEDIADIR)/toolbar.min.css
 EOMAKE
 
 WriteAll;
