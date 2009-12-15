@@ -39,10 +39,26 @@ file:
         $app;
     };
 
-If you pass a list of panel base names to the `enable()` call, only those
-panels will be enabled. If you don't pass an argument, the default list of
-panels - `Environment`, `Response`, `Timer` and `Memory` - will be
-enabled.
+The `Debug` middleware takes an optional `panels` argument whose value is
+expected to be a list of panel names. If given, only those panels will be
+enabled. If you don't pass a `panels` argument, the default list of panels -
+`Environment`, `Response`, `Timer` and `Memory` - will be enabled.
+
+There is also the possiblity to pass arguments to the panels themselves. For
+example, the `DBITrace` panel takes an optional `level` argument to specify
+the desired trace level.
+
+To pass arguments to a panel, expand the panel name to an array reference
+whose first element is the panel name and whose remaining elements are
+key/value pairs to be passed to the panel. For example:
+
+    builder {
+        enable 'Debug', panels =>
+          [ qw(Environment Response Timer Memory),
+            [ 'DBITrace', level => 2 ]
+          ];
+        $app;
+    };
 
 # PANELS
 
