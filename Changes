@@ -1,15 +1,21 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
 0.04  Tue 2009.12.15 22:25:16 CET (Marcel Gruenauer <marcel@cpan.org>)
-     - fixed 'uninitialized' warnings for undef values in vardump()
+     - fixed 'uninitialized' warnings for undef values in vardump() (hanekomu)
+     - fix POD typos (hanekomu)
 
 0.03  Sun 2009.12.13 23:49:53 CET (Marcel Gruenauer <marcel@cpan.org>)
-     - added CatalystLog panel
-     - Added ability to pass arguments and objects to panels
-     - DBITrace panel takes an optional 'level' argument (trace level)
-     - nav_title() defaults to title() now, so need to set it in most panels
-     - added documentation
-     - various small bug fixes and improvements
+     - added CatalystLog panel (hanekomu, miyagawa)
+     - Added ability to pass arguments and objects to panels (hanekomu)
+     - circumvented a bug in Data::Dump(er) related typeglobs (miyagawa)
+     - DBITrace panel takes an optional 'level' argument (trace level) (hanekomu)
+     - nav_title() defaults to title() now, so need to set it in most panels (hanekomu)
+     - added documentation (hanekomu)
+     - fix a memory leak by declaring renderer only once (miyagawa)
+     - added very basic tests (hanekomu)
+     - Environment panel does its work in process_response() now
+     - various small bug fixes and improvements (miyagawa, hanekomu)
+     - refactoring (hanekomu)
 
 0.02  Sun 2009.12.13 12:01:29 CET (Marcel Gruenauer <marcel@cpan.org>)
      - For debug information to be sent, the Content-Type should contain
