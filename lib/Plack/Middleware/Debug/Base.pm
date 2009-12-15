@@ -5,7 +5,7 @@ use warnings;
 use Plack::Util::Accessor qw(content renderer);
 use Text::MicroTemplate;
 use Data::Dump;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub new {
     my $proto = shift;

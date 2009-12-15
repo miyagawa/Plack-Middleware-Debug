@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub process_response {
     my ($self, $res, $env) = @_;

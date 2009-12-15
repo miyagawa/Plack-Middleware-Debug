@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Config;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub process_request {
     my ($self, $env) = @_;

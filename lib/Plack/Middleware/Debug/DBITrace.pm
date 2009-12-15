@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Plack::Util::Accessor qw(level);
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my $template = __PACKAGE__->build_template(<<'EOTMPL');
 <table>

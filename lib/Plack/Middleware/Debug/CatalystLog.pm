@@ -5,7 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 use Catalyst::Log;
 use Class::Method::Modifiers qw(install_modifier);
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my $psgi_env;
 install_modifier 'Catalyst::Log', 'around', '_log' => sub {

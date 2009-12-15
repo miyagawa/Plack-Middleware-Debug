@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.04  Tue 2009.12.15 22:25:16 CET (Marcel Gruenauer <marcel@cpan.org>)
+     - fixed 'uninitialized' warnings for undef values in vardump()
+
 0.03  Sun 2009.12.13 23:49:53 CET (Marcel Gruenauer <marcel@cpan.org>)
      - added CatalystLog panel
      - Added ability to pass arguments and objects to panels
