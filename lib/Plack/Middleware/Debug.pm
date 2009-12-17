@@ -144,15 +144,18 @@ sub call {
                     panels   => $self->panels,
                     BASE_URL => $env->{SCRIPT_NAME},
                 };
-                my $content = $self->renderer->($vars);
-                if (my $cl = $headers->get('Content-Length')) {
-                    $headers->set('Content-Length' => $cl + length $content);
-                }
-                return sub {
-                    my $chunk = shift;
-                    return unless defined $chunk;
-                    $chunk =~ s!(?=</body>)!$content!i;
-                    return $chunk;
+
+                if ($res->[2]) {
+                    my $content = $self->renderer->($vars);
+                    my @body;
+                    Plack::Util::foreach($res->[2], sub {
+                        my $chunk = shift;
+                        $chunk =~ s!(?=</body>)!$content!i;
+                        push @body, $chunk;
+                    });
+
+                    $headers->set('Content-Length' => length(join '', @body));
+                    $res->[2] = \@body;
                 };
             }
             $res;
