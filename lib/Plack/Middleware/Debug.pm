@@ -145,8 +145,8 @@ sub call {
                     BASE_URL => $env->{SCRIPT_NAME},
                 };
 
+                my $content = $self->renderer->($vars);
                 if ($res->[2]) {
-                    my $content = $self->renderer->($vars);
                     my @body;
                     Plack::Util::foreach($res->[2], sub {
                         my $chunk = shift;
@@ -156,7 +156,15 @@ sub call {
 
                     $headers->set('Content-Length' => length(join '', @body));
                     $res->[2] = \@body;
-                };
+                } else {
+                    $headers->remove('Content-Length');
+                    return sub {
+                        my $chunk = shift;
+                        return unless defined $chunk;
+                        $chunk =~ s!(?=</body>)!$content!i;
+                        return $chunk;
+                    };
+                }
             }
             $res;
         }
