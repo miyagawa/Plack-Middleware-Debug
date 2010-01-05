@@ -10,7 +10,9 @@ sub run {
     return sub {
         my $res = shift;
 
-        my $session = $env->{'plack.session'};
+        my $session = $env->{'plack.session'}
+            or return $panel->disable;
+
         my $dump = {};
         if ($session) {
             $dump = $session->store->dump_session($session->id);

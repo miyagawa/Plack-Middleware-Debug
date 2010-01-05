@@ -21,6 +21,8 @@ sub run {
         $old_trace = DBI->trace;
         open my $fh, ">", \$output;
         DBI->trace($self->level . ",SQL", $fh);
+    } else {
+        return $panel->disable;
     }
 
     return sub {

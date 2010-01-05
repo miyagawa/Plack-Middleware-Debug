@@ -86,7 +86,7 @@ sub TEMPLATE {
 EOTMPL
 
 sub default_panels {
-    [qw(Environment Response Timer Memory)];
+    [qw(Environment Response Timer Memory Session DBITrace)];
 }
 
 sub prepare_app {
@@ -137,8 +137,10 @@ sub call {
         my $headers = Plack::Util::headers($res->[1]);
         if (   $res->[0] == 200
             && $headers->get('Content-Type') =~ m!^(?:text/html|application/xhtml\+xml)!) {
+
+            my $panels = delete $env->{'plack.debug.panels'};
             my $vars = {
-                panels   => delete $env->{'plack.debug.panels'},
+                panels   => [ grep !$_->disabled, @$panels ],
                 BASE_URL => $env->{SCRIPT_NAME},
             };
 
@@ -188,7 +190,9 @@ The C<Debug> middleware takes an optional C<panels> argument whose value is
 expected to be a reference to an array of panel specifications.  If given,
 only those panels will be enabled. If you don't pass a C<panels>
 argument, the default list of panels - C<Environment>, C<Response>,
-C<Timer> and C<Memory> - will be enabled, each with their default settings.
+C<Timer>, C<Memory>, C<Session> and C<DBITrace> - will be enabled, each with
+their default settings, and automatically disabled if their targer modules or
+middleware components are not loaded.
 
 Each panel specification can take one of three forms:
 
