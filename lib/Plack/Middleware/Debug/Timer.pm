@@ -2,19 +2,31 @@ package Plack::Middleware::Debug::Timer;
 use 5.008;
 use strict;
 use warnings;
-use Time::HiRes qw(gettimeofday tv_interval);
-use Plack::Util::Accessor qw(start_time elapsed);
+use Time::HiRes;
+
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.04';
 
-sub nav_subtitle {
-    my $self = shift;
-    $self->format_elapsed;
-}
+sub run {
+    my($self, $env, $panel) = @_;
 
-sub format_elapsed {
-    my $self = shift;
-    sprintf '%s s', $self->elapsed;
+    my $start = [ Time::HiRes::gettimeofday ];
+
+    return sub {
+        my $res = shift;
+
+        my $end = [ Time::HiRes::gettimeofday ];
+        my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
+
+        $panel->nav_subtitle($elapsed);
+        $panel->content(
+            $self->render_list_pairs(
+                [ Start  => $self->format_time($start),
+                  End    => $self->format_time($end),
+                  Elapsed => $elapsed ],
+            ),
+        );
+    };
 }
 
 sub format_time {
@@ -24,24 +36,6 @@ sub format_time {
       $hour, $min, $sec, $time->[1];
 }
 
-sub process_request {
-    my ($self, $env) = @_;
-    $self->start_time([gettimeofday]);
-}
-
-sub process_response {
-    my ($self, $res, $env) = @_;
-    my $end_time = [gettimeofday];
-    $self->elapsed(tv_interval $self->start_time, $end_time);
-    $self->content(
-        $self->render_list_pairs(
-            [   Start   => $self->format_time($self->start_time),
-                End     => $self->format_time($end_time),
-                Elapsed => $self->format_elapsed,
-            ]
-        )
-    );
-}
 1;
 __END__
 

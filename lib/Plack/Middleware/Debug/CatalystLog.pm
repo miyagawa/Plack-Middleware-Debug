@@ -7,6 +7,7 @@ use Catalyst::Log;
 use Class::Method::Modifiers qw(install_modifier);
 our $VERSION = '0.04';
 
+# XXX Not thread/Coro/AE safe. Should use $c->env or something
 my $psgi_env;
 install_modifier 'Catalyst::Log', 'around', '_log' => sub {
     my $orig = shift;
@@ -15,19 +16,19 @@ install_modifier 'Catalyst::Log', 'around', '_log' => sub {
     $self->$orig(@_);
 };
 
-sub process_request {
-    my($self, $env) = @_;
+sub run {
+    my($self, $env, $panel) = @_;
     $psgi_env = $env;
+
+    return sub {
+        my $res = shift;
+
+        my $log = delete $env->{'plack.middleware.catalyst_log'};
+        $panel->content("<pre>$log</pre>");
+        $psgi_env = undef;
+    };
 }
 
-sub process_response {
-    my ($self, $res, $env) = @_;
-
-    my $log = delete $env->{'plack.middleware.catalyst_log'};
-    $self->content("<pre>$log</pre>");
-
-    $psgi_env = undef;
-}
 1;
 __END__
 

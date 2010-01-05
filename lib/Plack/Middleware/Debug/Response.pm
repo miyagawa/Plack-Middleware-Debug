@@ -18,11 +18,19 @@ sub format_headers {
     wantarray ? @result : \@result;
 }
 
-sub process_response {
-    my ($self, $res, $env) = @_;
-    $self->content($self->render_list_pairs(
-        [ 'Status code' => $res->[0], $self->format_headers($res) ]));
+sub run {
+    my($self, $env, $panel) = @_;
+
+    return sub {
+        my $res = shift;
+        $panel->content(
+            $self->render_list_pairs(
+                [ 'Status code' => $res->[0], $self->format_headers($res) ],
+            ),
+        );
+    };
 }
+
 1;
 __END__
 

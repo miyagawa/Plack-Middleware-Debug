@@ -5,10 +5,12 @@ use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.04';
 
-sub process_response {
-    my ($self, $res, $env) = @_;
-    $self->content($self->render_hash($env));
+sub run {
+    my($self, $env, $panel) = @_;
+    $panel->content(sub { $self->render_hash($env) });
+    return;
 }
+
 1;
 __END__
 

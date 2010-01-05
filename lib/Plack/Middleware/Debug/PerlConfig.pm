@@ -6,10 +6,11 @@ use Config;
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.04';
 
-sub process_request {
-    my ($self, $env) = @_;
-    $self->content($self->render_hash(\%Config));
+sub run {
+    my ($self, $env, $panel) = @_;
+    $panel->content($self->render_hash(\%Config));
 }
+
 1;
 __END__
 

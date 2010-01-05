@@ -6,50 +6,33 @@ use Plack::Util::Accessor qw(level);
 use parent qw(Plack::Middleware::Debug::Base);
 our $VERSION = '0.04';
 
-my $template = __PACKAGE__->build_template(<<'EOTMPL');
-<table>
-    <tbody>
-% my $i;
-% for my $line (split "\n", $_[0]->{dump}) {
-            <tr class="<%= ++$i % 2 ? 'plDebugEven' : 'plDebugOdd' %>">
-                <td><%= $line %></td>
-            </tr>
-% }
-    </tbody>
-</table>
-EOTMPL
-
-sub init {
+sub prepare_app {
     my $self = shift;
-    $self->SUPER::init(@_);
     $self->level(1) unless defined $self->level;
 }
 
-sub title     { 'DBI Trace' }
-sub nav_subtitle {
-    my $self = shift;
-    sprintf 'Level %s', $self->level;
-}
+sub run {
+    my($self, $env, $panel) = @_;
 
-sub process_request {
-    my ($self, $env) = @_;
+    $panel->nav_subtitle("Level " . $self->level);
+
+    my($old_trace, $output);
     if (defined &DBI::trace) {
-        $env->{'plack.debug.dbi.trace'} = DBI->trace;
-        open my $fh, ">", \my $output;
-        my $level = $self->level;
-        DBI->trace("$level,SQL", $fh);
-        $env->{'plack.debug.dbi.output'} = \$output;
+        $old_trace = DBI->trace;
+        open my $fh, ">", \$output;
+        DBI->trace($self->level . ",SQL", $fh);
     }
+
+    return sub {
+        my $res = shift;
+
+        if (defined $old_trace) {
+            DBI->trace($old_trace);
+            $panel->content($self->render_lines($output));
+        }
+    };
 }
 
-sub process_response {
-    my ($self, $res, $env) = @_;
-    if (defined(my $trace = $env->{'plack.debug.dbi.trace'})) {
-        DBI->trace($trace);    # reset
-        my $dump = $env->{'plack.debug.dbi.output'};
-        $self->content( $self->render($template, { dump => $$dump }) );
-    }
-}
 1;
 __END__
 

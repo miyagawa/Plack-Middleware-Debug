@@ -24,7 +24,7 @@ for my $content_type (@content_types) {
         is $res->code, 200, 'response status 200';
         for my $panel (qw(Environment Response Timer Memory)) {
             like $res->content,
-              qr/<a href="#" title="$panel" class="plDebug${panel}Panel">/,
+              qr/<a href="#" title="$panel" class="plDebug${panel}\d+Panel">/,
               "HTML contains $panel panel";
         }
     };

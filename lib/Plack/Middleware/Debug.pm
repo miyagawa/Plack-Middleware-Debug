@@ -1,15 +1,18 @@
 package Plack::Middleware::Debug;
-use 5.008;
+use 5.008_001;
 use strict;
 use warnings;
-use File::ShareDir;
-use Plack::App::File;
-use Plack::Util::Accessor qw(panels renderer files);
-use Plack::Util;
-use Text::MicroTemplate;
-use Try::Tiny;
 use parent qw(Plack::Middleware);
 our $VERSION = '0.04';
+
+use File::ShareDir;
+use Plack::App::File;
+use Plack::Builder;
+use Plack::Util::Accessor qw(panels renderer files);
+use Plack::Util;
+use Plack::Middleware::Debug::Panel;
+use Text::MicroTemplate;
+use Try::Tiny;
 
 sub TEMPLATE {
     <<'EOTMPL' }
@@ -39,7 +42,7 @@ sub TEMPLATE {
 % } else {
             <li id="plDebugButton">DEBUG</li>
 % }
-% for my $panel (@{$stash->{panels}}) {
+% for my $panel (reverse @{$stash->{panels}}) {
                 <li>
 % if ($panel->content) {
                         <a href="<%= $panel->url %>" title="<%= $panel->title %>" class="<%= $panel->dom_id %>">
@@ -62,7 +65,7 @@ sub TEMPLATE {
     <div style="display:none;" id="plDebugToolbarHandle">
         <a title="Show Toolbar" id="plShowToolBarButton" href="#">&laquo;</a>
     </div>
-% for my $panel (@{$stash->{panels}}) {
+% for my $panel (reverse @{$stash->{panels}}) {
 % if ($panel->content) {
             <div id="<%= $panel->dom_id %>" class="panelContent">
                 <div class="plDebugPanelTitle">
@@ -71,7 +74,8 @@ sub TEMPLATE {
                 </div>
                 <div class="plDebugPanelContent">
                     <div class="scroll">
-                        <%= Text::MicroTemplate::encoded_string($panel->content) %>
+% my $content = ref $panel->content eq 'CODE' ? $panel->content->() : $panel->content
+                        <%= Text::MicroTemplate::encoded_string($content) %>
                     </div>
                 </div>
             </div>
@@ -81,35 +85,32 @@ sub TEMPLATE {
 </div>
 EOTMPL
 
+sub default_panels {
+    [qw(Environment Response Timer Memory)];
+}
+
 sub prepare_app {
     my $self = shift;
-    my $root =
-      try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
-    my @panels;
-    for my $spec (@{ $self->panels || [qw(Environment Response Timer Memory)] })
-    {
+    my $root = try { File::ShareDir::dist_dir('Plack-Middleware-Debug') } || 'share';
+
+    my $builder = Plack::Builder->new;
+
+    for my $spec (@{ $self->panels || $self->default_panels }) {
         my ($package, %args);
         if (ref $spec eq 'ARRAY') {
-
+            # For the backward compatiblity
             # [ 'PanelName', key1 => $value1, ... ]
             $package = shift @$spec;
-            %args    = @$spec;
-            my $panel_class = Plack::Util::load_class($package, __PACKAGE__);
-            next unless $panel_class->should_run;
-            push @panels, $panel_class->new(%args);
-        } elsif (ref $spec) {
-
-            # accept a panel object
-            push @panels, $spec;
+            $builder->add_middleware("Debug::$package", @$spec);
         } else {
-
-            # not a ref, just a panel basename string
-            my $panel_class = Plack::Util::load_class($spec, __PACKAGE__);
-            next unless $panel_class->should_run;
-            push @panels, $panel_class->new;
+            # $spec could be a code ref (middleware) or a string
+            $spec = "Debug::$spec" unless ref $spec;
+            $builder->add_middleware($spec);
         }
     }
-    $self->panels(\@panels);
+
+    $self->app( $builder->to_app($self->app) );
+
     $self->renderer(
         Text::MicroTemplate->new(
             template   => $self->TEMPLATE,
@@ -118,6 +119,7 @@ sub prepare_app {
             line_start => '%',
           )->build
     );
+
     $self->files(Plack::App::File->new(root => $root));
 }
 
@@ -126,50 +128,31 @@ sub call {
     if ($env->{PATH_INFO} =~ m!^/debug_toolbar!) {
         return $self->files->call($env);
     }
-    for my $panel (@{ $self->panels }) {
-        $panel->process_request($env);
-    }
+
+    $env->{'plack.debug.panels'} = [];
+
     my $res = $self->app->($env);
-    $self->response_cb(
-        $res,
-        sub {
-            my $res     = shift;
-            my $headers = Plack::Util::headers($res->[1]);
-            if (   $res->[0] == 200
-                && $headers->get('Content-Type') =~ m!^text/html!) {
-                for my $panel (reverse @{ $self->panels }) {
-                    $panel->process_response($res, $env);
-                }
-                my $vars = {
-                    panels   => $self->panels,
-                    BASE_URL => $env->{SCRIPT_NAME},
-                };
+    $self->response_cb($res, sub {
+        my $res     = shift;
+        my $headers = Plack::Util::headers($res->[1]);
+        if (   $res->[0] == 200
+            && $headers->get('Content-Type') =~ m!^(?:text/html|application/xhtml\+xml)!) {
+            my $vars = {
+                panels   => delete $env->{'plack.debug.panels'},
+                BASE_URL => $env->{SCRIPT_NAME},
+            };
 
-                my $content = $self->renderer->($vars);
-                if ($res->[2]) {
-                    my @body;
-                    Plack::Util::foreach($res->[2], sub {
-                        my $chunk = shift;
-                        $chunk =~ s!(?=</body>)!$content!i;
-                        push @body, $chunk;
-                    });
-
-                    $headers->set('Content-Length' => length(join '', @body));
-                    $res->[2] = \@body;
-                } else {
-                    $headers->remove('Content-Length');
-                    return sub {
-                        my $chunk = shift;
-                        return unless defined $chunk;
-                        $chunk =~ s!(?=</body>)!$content!i;
-                        return $chunk;
-                    };
-                }
-            }
-            $res;
+            my $content = $self->renderer->($vars);
+            return sub {
+                my $chunk = shift;
+                return unless defined $chunk;
+                $chunk =~ s!(?=</body>)!$content!i;
+                return $chunk;
+            };
         }
-    );
+    });
 }
+
 1;
 __END__
 
@@ -179,30 +162,17 @@ Plack::Middleware::Debug - display information about the current request/respons
 
 =head1 SYNOPSIS
 
-    # app.psgi
-
-    use Plack::Builder;
-
-    my $app = sub {
-        return [ 200, [ 'Content-Type' => 'text/html' ],
-               [ '<body>Hello World</body>' ] ];
-    };
-
-    builder {
-        enable 'Debug';
-        $app;
-    };
-
+  enable "Debug";
 
 =head1 DESCRIPTION
 
 The debug middleware offers a configurable set of panels that displays
 information about the current request and response. The information is
 generated only for responses with a status of 200 (C<OK>) and a
-C<Content-Type> that contains C<text/html> and is embedded in the HTML that is
-sent back to the browser. Also the code is injected directly before the C<<
-</body> >> tag so if there is no such tag, the information will not be
-injected.
+C<Content-Type> that contains C<text/html> or C<application/xhtml+xml>
+and is embedded in the HTML that is sent back to the browser. Also the
+code is injected directly before the C<< </body> >> tag so if there is
+no such tag, the information will not be injected.
 
 To enable the middleware, just use L<Plack::Builder> as usual in your C<.psgi>
 file:
@@ -210,7 +180,7 @@ file:
     use Plack::Builder;
 
     builder {
-        enable 'Debug', panels => [ qw(DBITrace PerlConfig) ];
+        enable 'Debug', panels => [ qw(DBITrace Memory Timer) ];
         $app;
     };
 
@@ -232,12 +202,12 @@ object is created with its default settings.
 
 =item An array reference
 
-If you need to pass arguments to the panel object as it is created, use this
-form. The first element of the array reference has to be the panel base name.
-The remaining elements are key/value pairs to be passed to the panel.
+If you need to pass arguments to the panel object as it is created,
+you may use this form (But see below).
 
-Not all panels take extra arguments. But the C<DBITrace> panel, for example,
-takes an optional C<level> argument to specify the desired trace level.
+The first element of the array reference has to be the panel base
+name.  The remaining elements are key/value pairs to be passed to the
+panel.
 
 For example:
 
@@ -249,159 +219,98 @@ For example:
         $app;
     };
 
-=item An object
+Because each panel is a middleware component, you can write this way
+as well, and is now recommended:
 
-You can also pass panel objects directly to the C<Debug> middleware. This
-might be useful if you have custom debug panels in your framework or web
-application.
+    builder {
+        enable 'Debug'; # load defaults
+        enable 'Debug::DBITrace', level => 2;
+        $app;
+    };
 
-=back
+Note that the C<enable 'Debug'> line should come before other Debug
+panels because of the order middleware components are executed.
 
-=head1 PANELS
+=item Custom middleware
 
-=over 4
-
-=item C<DBITrace>
-
-Display DBI trace information. See L<Plack::Middleware::Debug::DBITrace>.
-
-=item C<Environment>
-
-Displays the PSGI environment from the request. See
-L<Plack::Middleware::Debug::Environment>.
-
-=item C<Memory>
-
-Displays memory usage before the request and after the response. See
-L<Plack::Middleware::Debug::Memory>.
-
-=item C<ModuleVersions>
-
-Displays the loaded modules and their versions. See
-L<Plack::Middleware::Debug::ModuleVersions>.
-
-=item C<PerlConfig>
-
-Displays the configuration information of the Perl interpreter itself. See
-L<Plack::Middleware::Debug::PerlConfig>
-
-=item C<Response>
-
-Displays the status code and response headers. See
-L<Plack::Middleware::Debug::Response>.
-
-=item C<Timer>
-
-Displays how long the request took. See L<Plack::Middleware::Debug::Timer>.
-
-=item C<CatalystLog>
-
-In a Catalyst application, this panel displays the Catalyst log output. See
-L<Plack::Middleware::Debug::CatalystLog>.
+You can also pass a Panel middleware component. This might be useful
+if you have custom debug panels in your framework or web application.
 
 =back
 
 =head1 HOW TO WRITE YOUR OWN DEBUG PANEL
 
-The C<Debug> middleware is designed to be easily extensible. You might want to
-write a custom debug panel for your framework or for your web application.
+The C<Debug> middleware is designed to be easily extensible. You might
+want to write a custom debug panel for your framework or for your web
+application. Each debug panel is also a Plack middleware copmonent and
+is easy to write one.
+
 Let's look at the anatomy of the C<Timer> debug panel. Here is the code from
 that panel:
 
-    package Plack::Middleware::Debug::Timer;
-    use 5.008;
-    use strict;
-    use warnings;
-    use Time::HiRes qw(gettimeofday tv_interval);
-    use Plack::Util::Accessor qw(start_time elapsed);
-    use parent qw(Plack::Middleware::Debug::Base);
-    our $VERSION = '0.03';
+  package Plack::Middleware::Debug::Timer;
+  use Time::HiRes;
 
-    sub nav_subtitle {
-        my $self = shift;
-        $self->format_elapsed;
-    }
+  use parent qw(Plack::Middleware::Debug::Base);
 
-    sub format_elapsed {
-        my $self = shift;
-        sprintf '%s s', $self->elapsed;
-    }
+  sub run {
+      my($self, $env, $panel) = @_;
 
-    sub format_time {
-        my ($self, $time) = @_;
-        my ($sec, $min, $hour, $mday, $mon, $year) = (localtime($time->[0]));
-        sprintf "%04d.%02d.%02d %02d:%02d:%02d.%d", $year + 1900, $mon + 1, $mday,
-          $hour, $min, $sec, $time->[1];
-    }
+      my $start = [ Time::HiRes::gettimeofday ];
 
-    sub process_request {
-        my ($self, $env) = @_;
-        $self->start_time([gettimeofday]);
-    }
+      return sub {
+          my $res = shift;
 
-    sub process_response {
-        my ($self, $res, $env) = @_;
-        my $end_time = [gettimeofday];
-        $self->elapsed(tv_interval $self->start_time, $end_time);
-        $self->content(
-            $self->render_list_pairs(
-                [   Start   => $self->format_time($self->start_time),
-                    End     => $self->format_time($end_time),
-                    Elapsed => $self->format_elapsed,
-                ]
-            )
-        );
-    }
+          my $end = [ Time::HiRes::gettimeofday ];
+          my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
+
+          $panel->nav_subtitle($elapsed);
+          $panel->content(
+              $self->render_list_pairs(
+                  [ Start  => $self->format_time($start),
+                    End    => $self->format_time($end),
+                    Elapsed => $elapsed ],
+              ),
+          );
+      };
+  }
+
+  sub format_time { ... }
 
 To write a new debug panel, place it in the C<Plack::Middleware::Debug::>
 namespace. In our example, the C<Timer> panel lives in the
 C<Plack::Middleware::Debug::Timer> package.
 
-A panel should subclass L<Plack::Middleware::Debug::Base>. It provides a lot
-of methods that the C<Debug> middleware expects a panel to have and provides
-some sensible defaults for others, so you only need to override what is
-specific to your custom panel.
+The only thing your panel should do is to subclass
+L<Plack::Middleware::Debug::Base>. This does most of the things a
+middleware component should do as a Plack middleware, so you only need
+to override C<run> method to profile and create the panel content.
 
-The panel's title - which appears at the top left when the panel is active -
-and its navigation title - which appears in the navigation bar on the right
-side - are set automatically from the panel's base name - C<Timer> in our
-case. This is a useful for default for us, so we don't need to override these
-methods.
+  sub run {
+      my($self, $env, $panel) = @_;
 
-The panels' navigation subtitle, which appears in the navigation bar
-underneath the panel title in smaller letters, is empty by default. For the
-C<Timer> panel, we would like to show the total time elapsed so the user can
-get a quick overview without having to activate the panel. So we override the
-C<nav_subtitle()> method.
+      # Do something before the application runs
 
-How do we know how much time elapsed for the request? We have to take the time
-when the request comes in, and again when the response goes out. So we
-override the C<process_request()> and C<process_response()> methods. In
-C<process_request()> we just store the current time. To generate the accessors
-for any attributes our panel might need we use L<Plack::Util::Accessor>.
+      return sub {
+          my $res = shift;
 
-In C<process_response()> we take the time again, determine how much time has
-elapsed, store that information in an accessor so C<sub_navtitle()> can return
-it when asked by the template, then we actually render the template with our
-data and store it in C<content()>.
+          # Do something after the application returns
 
-When the HTML, CSS and JavaScript are generated and injected by the C<Debug>
-middleware, it will ask all panels whether they have any content. If so, the
-actual panel is generated. If not, then just an inactive navigation bar entry
-is generated.  Having data in the panel's C<content> attribute is the sign
-that the C<Debug> middleware looks for.
+      };
+  }
 
-In our C<Timer> example we want to list three key/value pairs: the start time,
-the end time and the elapsed time. We use the C<render_list_pairs()> method
-to place the pairs in the order we want. There is also a C<render_hash()>
-method, but it would sort the hash keys, and this is not what we want.
+You can create as many lexical variables as you need and reference
+that in the returned callback as a closure, and update the content of
+of the C<$panel> which is Plack::Middleware::Debug::Panel object.
 
-With this our C<Timer> debug panel is finished. Now we can use it in the
-C<enable 'Debug'> call like any other debug panel.
+In our C<Timer> example we want to list three key/value pairs: the
+start time, the end time and the elapsed time. We use the
+C<render_list_pairs()> method to place the pairs in the order we
+want. There is also a C<render_hash()> and C<render_lines()> method,
+to render a hash keys and values, as well as just text lines (e.g. log
+messages).
 
 =head1 BUGS AND LIMITATIONS
-
-No bugs have been reported.
 
 Please report any bugs or feature requests through the web interface at
 L<http://rt.cpan.org>.
