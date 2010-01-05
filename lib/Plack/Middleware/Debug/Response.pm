@@ -3,29 +3,20 @@ use 5.008;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
-use HTTP::Headers;
 our $VERSION = '0.04';
-
-sub format_headers {
-    my ($self, $res) = @_;
-    my $headers = HTTP::Headers->new;
-    my @headers = @{ $res->[1] };       # Make a copy so we can splice
-    while (my ($key, $value) = splice @headers, 0, 2) {
-        $headers->push_header($key, $value);
-    }
-    my @result =
-      map { $_, scalar($headers->header($_)) } $headers->header_field_names;
-    wantarray ? @result : \@result;
-}
 
 sub run {
     my($self, $env, $panel) = @_;
 
     return sub {
         my $res = shift;
+
+        my @headers;
+        Plack::Util::header_iter($res->[1], sub { push @headers, @_ });
+
         $panel->content(
             $self->render_list_pairs(
-                [ 'Status code' => $res->[0], $self->format_headers($res) ],
+                [ 'Status code' => $res->[0], @headers ],
             ),
         );
     };
