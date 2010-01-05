@@ -39,20 +39,6 @@ sub current_memory {
     $out;
 }
 
-sub process_response {
-    my ($self, $res) = @_;
-    $self->after_memory($self->current_memory);
-    $self->content(
-        $self->render_list_pairs(
-            [   Before => $self->format_memory($self->before_memory),
-                After  => $self->format_memory($self->after_memory),
-                Diff   => $self->format_memory(
-                    $self->after_memory - $self->before_memory
-                ),
-            ],
-        )
-    );
-}
 1;
 __END__
 
