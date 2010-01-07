@@ -10,7 +10,7 @@ sub run {
     return sub {
         my $res = shift;
 
-        my $session = $env->{'plack.session'}
+        my $session = $env->{'psgix.session'}
             or return $panel->disable;
 
         my $dump = {};
