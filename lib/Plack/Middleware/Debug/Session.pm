@@ -15,7 +15,7 @@ sub run {
 
         my $dump = {};
         if ($session) {
-            $dump = $session->store->dump_session($session->id);
+            $dump = $session->dump;
             $dump->{'Session ID'} = $session->id;
         }
 
