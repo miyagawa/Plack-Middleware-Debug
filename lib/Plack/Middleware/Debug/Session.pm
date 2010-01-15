@@ -13,13 +13,7 @@ sub run {
         my $session = $env->{'psgix.session'}
             or return $panel->disable;
 
-        my $dump = {};
-        if ($session) {
-            $dump = $session->dump;
-            $dump->{'Session ID'} = $session->id;
-        }
-
-        $panel->content($self->render_hash($dump));
+        $panel->content($self->render_hash($session));
     };
 }
 
