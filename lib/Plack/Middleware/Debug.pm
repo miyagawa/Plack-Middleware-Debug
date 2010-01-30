@@ -224,7 +224,7 @@ For example:
     };
 
 Because each panel is a middleware component, you can write this way
-as well, and is now recommended:
+as well:
 
     builder {
         enable 'Debug'; # load defaults
@@ -232,7 +232,7 @@ as well, and is now recommended:
         $app;
     };
 
-Note that the C<enable 'Debug'> line should come before other Debug
+Note that the C<<enable 'Debug'>> line should come before other Debug
 panels because of the order middleware components are executed.
 
 =item Custom middleware
