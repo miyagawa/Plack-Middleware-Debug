@@ -1,5 +1,10 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.05  Sat Jan 30 00:24:39 PST 2010
+     - Major refactoring of middleware panels: Now panels are also middleware
+     - Support streaming interface as well (clkao)
+     - Added Session middleware panel
+     
 0.04  Tue 2009.12.15 22:25:16 CET (Marcel Gruenauer <marcel@cpan.org>)
      - fixed 'uninitialized' warnings for undef values in vardump() (hanekomu)
      - fix POD typos (hanekomu)

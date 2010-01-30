@@ -3,7 +3,6 @@ examples/dbi/app.psgi
 examples/dbi/dump.sql
 examples/dbi/foo.db
 examples/hello-world/app.psgi
-examples/hello-world/htdocs/debug_toolbar/Makefile
 inc/ExtUtils/MakeMaker.pm
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -34,8 +33,10 @@ lib/Plack/Middleware/Debug/DBITrace.pm
 lib/Plack/Middleware/Debug/Environment.pm
 lib/Plack/Middleware/Debug/Memory.pm
 lib/Plack/Middleware/Debug/ModuleVersions.pm
+lib/Plack/Middleware/Debug/Panel.pm
 lib/Plack/Middleware/Debug/PerlConfig.pm
 lib/Plack/Middleware/Debug/Response.pm
+lib/Plack/Middleware/Debug/Session.pm
 lib/Plack/Middleware/Debug/Timer.pm
 Makefile.PL
 MANIFEST			This list of files

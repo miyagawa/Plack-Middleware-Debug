@@ -3,7 +3,7 @@ use 5.008_001;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware);
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use File::ShareDir;
 use Plack::App::File;
