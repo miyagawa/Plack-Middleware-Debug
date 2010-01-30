@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Plack::Util::Accessor qw(level);
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub prepare_app {
     my $self = shift;

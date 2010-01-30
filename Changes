@@ -1,5 +1,9 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.06  Sat Jan 30 05:21:21 PST 2010
+     - Fixes UTF-8 issues when panels such as Env contains UTF-8 wide characters
+       (Thanks to tomyhero)
+
 0.05  Sat Jan 30 00:24:39 PST 2010
      - Major refactoring of middleware panels: Now panels are also middleware
      - Support streaming interface as well (clkao)
