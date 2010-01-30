@@ -5,6 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware);
 our $VERSION = '0.05';
 
+use Encode;
 use File::ShareDir;
 use Plack::App::File;
 use Plack::Builder;
@@ -74,7 +75,8 @@ sub TEMPLATE {
                 </div>
                 <div class="plDebugPanelContent">
                     <div class="scroll">
-% my $content = ref $panel->content eq 'CODE' ? $panel->content->() : $panel->content
+% my $content = ref $panel->content eq 'CODE' ? $panel->content->() : $panel->content;
+% $content = Encode::encode('latin1', $content, Encode::FB_XMLCREF);
                         <%= Text::MicroTemplate::encoded_string($content) %>
                     </div>
                 </div>
