@@ -3,7 +3,6 @@ examples/dbi/app.psgi
 examples/dbi/dump.sql
 examples/dbi/foo.db
 examples/hello-world/app.psgi
-inc/ExtUtils/MakeMaker.pm
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
