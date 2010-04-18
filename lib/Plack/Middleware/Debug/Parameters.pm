@@ -1,13 +1,19 @@
 package Plack::Middleware::Debug::Parameters;
 use strict;
 use warnings;
+use Plack::Util::Accessor qw(elements);
 use parent qw/Plack::Middleware::Debug::Base/;
 use Plack::Request;
+
+sub prepare_app {
+    my $self = shift;
+    $self->elements( [qw/headers cookies get post session/] )
+        unless $self->elements;
+}
 
 sub run {
     my ( $self, $env, $panel ) = @_;
     return sub {
-        my @sections = (qw/cookies get post session/);
         my $parameters;
         my $request = Plack::Request->new($env);
 
@@ -16,10 +22,11 @@ sub run {
             cookies => $request->cookies,
             post    => $request->body_parameters,
             session => $env->{'psgix.session'},
+            headers => $request->headers,
         };
         $panel->title('Request Vars');
         $panel->nav_title('Request Vars');
-        $panel->content( sub { $self->render_hash( $parameters, \@sections ) } );
+        $panel->content( sub { $self->render_hash( $parameters, $self->elements ) } );
     }
 }
 
@@ -30,11 +37,21 @@ __END__
 
 Plack::Middleware::Debug::Parameters - Parameters Panel
 
+=head1 SYNOPSIS
+
+    builder {
+        enable 'Debug'; # load defaults
+        enable 'Debug::DBITrace', elements => [qw/headers cookies/];
+        $app;
+    };
+
 =head1 DESCRIPTION
 
 return info about:
 
 =over 4
+
+=item request headers
 
 =item query parameters
 
