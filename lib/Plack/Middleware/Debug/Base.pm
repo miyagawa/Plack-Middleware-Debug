@@ -77,6 +77,32 @@ sub render {
     $template->($vars);
 }
 
+my $list_section_template = __PACKAGE__->build_template(<<'EOTMPL');
+% foreach my $s (@{$_[0]->{sections}}) {
+<h3><%= $s %></h3>
+%   if ($_[0]->{list}->{$s}) {
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+% my $i;
+% while (@{$_[0]->{list}->{$s}}) {
+% my($key, $value) = splice(@{$_[0]->{list}->{$s}}, 0, 2);
+            <tr class="<%= ++$i % 2 ? 'plDebugOdd' : 'plDebugEven' %>">
+                <td><%= $key %></td>
+                <td><%= vardump($value) %></td>
+            </tr>
+% }
+    </tbody>
+</table>
+%   }
+% }
+EOTMPL
+
 my $list_template = __PACKAGE__->build_template(<<'EOTMPL');
 <table>
     <thead>
@@ -118,14 +144,30 @@ sub render_lines {
 }
 
 sub render_list_pairs {
-    my ($self, $list) = @_;
-    $self->render($list_template, { list => $list });
+    my ($self, $list, $sections) = @_;
+    if ($sections) {
+        $self->render($list_section_template, { list => $list, sections => $sections });
+    }else{
+        $self->render($list_template, { list => $list });
+    }
 }
 
 sub render_hash {
-    my ($self, $hash) = @_;
-    my @hash = map { $_ => $hash->{$_} } sort keys %$hash;
-    $self->render($list_template, { list => \@hash });
+    my ( $self, $hash, $sections ) = @_;
+    if ($sections) {
+        my %hash;
+        foreach my $section ( keys %$hash ) {
+            push @{ $hash{$section} },
+                map { $_ => $hash->{$section}->{$_} }
+                sort keys %{ $hash->{$section} };
+        }
+        $self->render( $list_section_template,
+            { sections => $sections, list => \%hash } );
+    }
+    else {
+        my @hash = map { $_ => $hash->{$_} } sort keys %$hash;
+        $self->render( $list_template, { list => \@hash } );
+    }
 }
 
 1;
