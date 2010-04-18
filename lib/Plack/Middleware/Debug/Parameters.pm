@@ -17,6 +17,8 @@ sub run {
             post    => $request->body_parameters,
             session => $env->{'psgix.session'},
         };
+        $panel->title('Request Vars');
+        $panel->nav_title('Request Vars');
         $panel->content( sub { $self->render_hash( $parameters, \@sections ) } );
     }
 }
