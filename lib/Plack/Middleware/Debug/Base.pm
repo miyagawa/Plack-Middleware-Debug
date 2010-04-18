@@ -79,7 +79,7 @@ sub render {
 
 my $list_section_template = __PACKAGE__->build_template(<<'EOTMPL');
 % foreach my $s (@{$_[0]->{sections}}) {
-<h3><%= $s %></h3>
+<h3><%= ucfirst $s %></h3>
 %   if (scalar @{$_[0]->{list}->{$s}}) {
 <table>
     <thead>
