@@ -24,8 +24,8 @@ sub run {
             session => $env->{'psgix.session'},
             headers => $request->headers,
         };
-        $panel->title('Request Vars');
-        $panel->nav_title('Request Vars');
+        $panel->title('Request Variables');
+        $panel->nav_title('Request Variables');
         $panel->content( sub { $self->render_hash( $parameters, $self->elements ) } );
     }
 }
