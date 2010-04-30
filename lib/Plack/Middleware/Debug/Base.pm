@@ -234,7 +234,7 @@ The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
 site near you. Or see L<http://search.cpan.org/dist/Plack-Middleware-Debug/>.
 
-The development version lives at L<http://github.com/hanekomu/plack-middleware-debug/>.
+The development version lives at L<http://github.com/miyagawa/plack-middleware-debug/>.
 Instead of sending patches, please fork this project using the standard git
 and github infrastructure.
 
