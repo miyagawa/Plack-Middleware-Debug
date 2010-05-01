@@ -3,28 +3,16 @@ NAME
     request/response
 
 SYNOPSIS
-        # app.psgi
-
-        use Plack::Builder;
-
-        my $app = sub {
-            return [ 200, [ 'Content-Type' => 'text/html' ],
-                   [ '<body>Hello World</body>' ] ];
-        };
-
-        builder {
-            enable 'Debug';
-            $app;
-        };
+      enable "Debug";
 
 DESCRIPTION
     The debug middleware offers a configurable set of panels that displays
     information about the current request and response. The information is
     generated only for responses with a status of 200 ("OK") and a
-    "Content-Type" that contains "text/html" and is embedded in the HTML
-    that is sent back to the browser. Also the code is injected directly
-    before the "</body>" tag so if there is no such tag, the information
-    will not be injected.
+    "Content-Type" that contains "text/html" or "application/xhtml+xml" and
+    is embedded in the HTML that is sent back to the browser. Also the code
+    is injected directly before the "</body>" tag so if there is no such
+    tag, the information will not be injected.
 
     To enable the middleware, just use Plack::Builder as usual in your
     ".psgi" file:
@@ -32,7 +20,7 @@ DESCRIPTION
         use Plack::Builder;
 
         builder {
-            enable 'Debug', panels => [ qw(DBITrace PerlConfig) ];
+            enable 'Debug', panels => [ qw(DBITrace Memory Timer) ];
             $app;
         };
 
@@ -40,8 +28,9 @@ DESCRIPTION
     is expected to be a reference to an array of panel specifications. If
     given, only those panels will be enabled. If you don't pass a "panels"
     argument, the default list of panels - "Environment", "Response",
-    "Timer" and "Memory" - will be enabled, each with their default
-    settings.
+    "Timer", "Memory", "Session" and "DBITrace" - will be enabled, each with
+    their default settings, and automatically disabled if their targer
+    modules or middleware components are not loaded.
 
     Each panel specification can take one of three forms:
 
@@ -52,13 +41,11 @@ DESCRIPTION
 
     An array reference
         If you need to pass arguments to the panel object as it is created,
-        use this form. The first element of the array reference has to be
-        the panel base name. The remaining elements are key/value pairs to
-        be passed to the panel.
+        you may use this form (But see below).
 
-        Not all panels take extra arguments. But the "DBITrace" panel, for
-        example, takes an optional "level" argument to specify the desired
-        trace level.
+        The first element of the array reference has to be the panel base
+        name. The remaining elements are key/value pairs to be passed to the
+        panel.
 
         For example:
 
@@ -70,146 +57,94 @@ DESCRIPTION
                 $app;
             };
 
-    An object
-        You can also pass panel objects directly to the "Debug" middleware.
-        This might be useful if you have custom debug panels in your
-        framework or web application.
+        Because each panel is a middleware component, you can write this way
+        as well:
 
-PANELS
-    "DBITrace"
-        Display DBI trace information. See
-        Plack::Middleware::Debug::DBITrace.
+            builder {
+                enable 'Debug'; # load defaults
+                enable 'Debug::DBITrace', level => 2;
+                $app;
+            };
 
-    "Environment"
-        Displays the PSGI environment from the request. See
-        Plack::Middleware::Debug::Environment.
+        Note that the "<enable 'Debug'"> line should come before other Debug
+        panels because of the order middleware components are executed.
 
-    "Memory"
-        Displays memory usage before the request and after the response. See
-        Plack::Middleware::Debug::Memory.
-
-    "ModuleVersions"
-        Displays the loaded modules and their versions. See
-        Plack::Middleware::Debug::ModuleVersions.
-
-    "PerlConfig"
-        Displays the configuration information of the Perl interpreter
-        itself. See Plack::Middleware::Debug::PerlConfig
-
-    "Response"
-        Displays the status code and response headers. See
-        Plack::Middleware::Debug::Response.
-
-    "Timer"
-        Displays how long the request took. See
-        Plack::Middleware::Debug::Timer.
-
-    "CatalystLog"
-        In a Catalyst application, this panel displays the Catalyst log
-        output. See Plack::Middleware::Debug::CatalystLog.
+    Custom middleware
+        You can also pass a Panel middleware component. This might be useful
+        if you have custom debug panels in your framework or web
+        application.
 
 HOW TO WRITE YOUR OWN DEBUG PANEL
     The "Debug" middleware is designed to be easily extensible. You might
     want to write a custom debug panel for your framework or for your web
-    application. Let's look at the anatomy of the "Timer" debug panel. Here
-    is the code from that panel:
+    application. Each debug panel is also a Plack middleware copmonent and
+    is easy to write one.
 
-        package Plack::Middleware::Debug::Timer;
-        use 5.008;
-        use strict;
-        use warnings;
-        use Time::HiRes qw(gettimeofday tv_interval);
-        use Plack::Util::Accessor qw(start_time elapsed);
-        use parent qw(Plack::Middleware::Debug::Base);
-        our $VERSION = '0.03';
+    Let's look at the anatomy of the "Timer" debug panel. Here is the code
+    from that panel:
 
-        sub nav_subtitle {
-            my $self = shift;
-            $self->format_elapsed;
-        }
+      package Plack::Middleware::Debug::Timer;
+      use Time::HiRes;
 
-        sub format_elapsed {
-            my $self = shift;
-            sprintf '%s s', $self->elapsed;
-        }
+      use parent qw(Plack::Middleware::Debug::Base);
 
-        sub format_time {
-            my ($self, $time) = @_;
-            my ($sec, $min, $hour, $mday, $mon, $year) = (localtime($time->[0]));
-            sprintf "%04d.%02d.%02d %02d:%02d:%02d.%d", $year + 1900, $mon + 1, $mday,
-              $hour, $min, $sec, $time->[1];
-        }
+      sub run {
+          my($self, $env, $panel) = @_;
 
-        sub process_request {
-            my ($self, $env) = @_;
-            $self->start_time([gettimeofday]);
-        }
+          my $start = [ Time::HiRes::gettimeofday ];
 
-        sub process_response {
-            my ($self, $res, $env) = @_;
-            my $end_time = [gettimeofday];
-            $self->elapsed(tv_interval $self->start_time, $end_time);
-            $self->content(
-                $self->render_list_pairs(
-                    [   Start   => $self->format_time($self->start_time),
-                        End     => $self->format_time($end_time),
-                        Elapsed => $self->format_elapsed,
-                    ]
-                )
-            );
-        }
+          return sub {
+              my $res = shift;
+
+              my $end = [ Time::HiRes::gettimeofday ];
+              my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
+
+              $panel->nav_subtitle($elapsed);
+              $panel->content(
+                  $self->render_list_pairs(
+                      [ Start  => $self->format_time($start),
+                        End    => $self->format_time($end),
+                        Elapsed => $elapsed ],
+                  ),
+              );
+          };
+      }
+
+      sub format_time { ... }
 
     To write a new debug panel, place it in the "Plack::Middleware::Debug::"
     namespace. In our example, the "Timer" panel lives in the
     "Plack::Middleware::Debug::Timer" package.
 
-    A panel should subclass Plack::Middleware::Debug::Base. It provides a
-    lot of methods that the "Debug" middleware expects a panel to have and
-    provides some sensible defaults for others, so you only need to override
-    what is specific to your custom panel.
+    The only thing your panel should do is to subclass
+    Plack::Middleware::Debug::Base. This does most of the things a
+    middleware component should do as a Plack middleware, so you only need
+    to override "run" method to profile and create the panel content.
 
-    The panels' title - which appears at the top left when the panel is
-    active - and its navigation title - which appears in the navigation bar
-    on the right side - are set automatically from the panel's base name -
-    "Timer" in our case. This is a useful for default for us, so we don't
-    need to override these methods.
+      sub run {
+          my($self, $env, $panel) = @_;
 
-    The panels' navigation subtitle, which appears in the navigation bar
-    underneath the panel title in smaller letters, is empty by default. For
-    the "Timer" panel, we would like to show the total time elapsed so the
-    user can get the quick overview without having to activate the panel. So
-    we override the "nav_subtitle()" method.
+          # Do something before the application runs
 
-    How do we know how much time elapsed for the request? We have to take
-    the time when the request comes in, and again when the response goes
-    out. So we override the "process_request()" and "process_response()"
-    methods. In "process_request()" we just store the current time. To
-    generate the accessors for any attributes our panel might need we use
-    Plack::Util::Accessor.
+          return sub {
+              my $res = shift;
 
-    In "process_response()" we take the time again, determine how much time
-    has elapsed, store that information in an accessor so "sub_navtitle()"
-    can return it when asked by the template, then we actually render the
-    template with our data and store it in "content()".
+              # Do something after the application returns
 
-    When the HTML, CSS and JavaScript are generated and injected by the
-    "Debug" middleware, it will ask all panels whether they have any
-    content. If so, the actual panel is generated. If not, then just an
-    inactive navigation bar entry is generated. Having data in the panel's
-    "content" attribute is the sign that the "Debug" middleware looks for.
+          };
+      }
+
+    You can create as many lexical variables as you need and reference that
+    in the returned callback as a closure, and update the content of of the
+    $panel which is Plack::Middleware::Debug::Panel object.
 
     In our "Timer" example we want to list three key/value pairs: the start
     time, the end time and the elapsed time. We use the
     "render_list_pairs()" method to place the pairs in the order we want.
-    There is also a "render_hash()" method, but it would sort the hash keys,
-    and this is not what we want.
-
-    With this our "Timer" debug panel is finished. Now we can use it in the
-    "enable 'Debug'" call like any other debug panel.
+    There is also a "render_hash()" and "render_lines()" method, to render a
+    hash keys and values, as well as just text lines (e.g. log messages).
 
 BUGS AND LIMITATIONS
-    No bugs have been reported.
-
     Please report any bugs or feature requests through the web interface at
     <http://rt.cpan.org>.
 

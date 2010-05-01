@@ -1,7 +1,7 @@
 use inc::Module::Install;
 name 'Plack-Middleware-Debug';
 all_from 'lib/Plack/Middleware/Debug.pm';
-readme_from_pod;
+readme_from 'lib/Plack/Middleware/Debug.pm';
 auto_set_repository;
 requires 'parent';
 requires 'Plack';
