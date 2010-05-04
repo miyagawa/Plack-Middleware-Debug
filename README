@@ -159,7 +159,7 @@ AVAILABILITY
     <http://search.cpan.org/dist/Plack-Middleware-Debug/>.
 
     The development version lives at
-    <http://github.com/hanekomu/plack-middleware-debug/>. Instead of sending
+    <http://github.com/miyagawa/plack-middleware-debug/>. Instead of sending
     patches, please fork this project using the standard git and github
     infrastructure.
 

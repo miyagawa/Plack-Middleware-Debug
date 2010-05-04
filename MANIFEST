@@ -26,6 +26,7 @@ lib/Plack/Middleware/Debug/Environment.pm
 lib/Plack/Middleware/Debug/Memory.pm
 lib/Plack/Middleware/Debug/ModuleVersions.pm
 lib/Plack/Middleware/Debug/Panel.pm
+lib/Plack/Middleware/Debug/Parameters.pm
 lib/Plack/Middleware/Debug/PerlConfig.pm
 lib/Plack/Middleware/Debug/Response.pm
 lib/Plack/Middleware/Debug/Session.pm

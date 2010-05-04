@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.09  Tue May  4 16:24:09 PDT 2010
+     - Added new Parameters panel (franckcuny)
+
 0.08  Sat May  1 04:56:08 PDT 2010
      - Update Encode.pm dependency RT #57087 (jnareb)
      - Fixed packages
