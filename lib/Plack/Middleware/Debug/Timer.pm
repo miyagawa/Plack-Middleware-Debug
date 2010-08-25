@@ -5,7 +5,7 @@ use warnings;
 use Time::HiRes;
 
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub run {
     my($self, $env, $panel) = @_;

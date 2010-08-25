@@ -5,7 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
 use Catalyst::Log;
 use Class::Method::Modifiers qw(install_modifier);
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 # XXX Not thread/Coro/AE safe. Should use $c->env or something
 my $psgi_env;

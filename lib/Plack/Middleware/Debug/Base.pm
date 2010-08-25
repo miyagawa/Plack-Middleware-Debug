@@ -8,7 +8,7 @@ use Text::MicroTemplate;
 use Data::Dump;
 use Scalar::Util;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub call {
     my($self, $env) = @_;

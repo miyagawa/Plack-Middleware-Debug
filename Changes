@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.10  Wed Aug 25 12:43:54 PDT 2010
+     - Support panels in non-200 responses as well since they're useful for debugging anyway (haarg)
+
 0.09  Tue May  4 16:24:09 PDT 2010
      - Added new Parameters panel (franckcuny)
 
