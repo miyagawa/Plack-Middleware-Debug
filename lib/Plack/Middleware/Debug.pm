@@ -138,7 +138,7 @@ sub call {
         my $res     = shift;
         my $headers = Plack::Util::headers($res->[1]);
         if (   ! Plack::Util::status_with_no_entity_body($res->[0])
-            && $headers->get('Content-Type') =~ m!^(?:text/html|application/xhtml\+xml)!) {
+            && ($headers->get('Content-Type') || '') =~ m!^(?:text/html|application/xhtml\+xml)!) {
 
             my $panels = delete $env->{'plack.debug.panels'};
             my $vars = {
