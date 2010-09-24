@@ -5,7 +5,7 @@ readme_from 'lib/Plack/Middleware/Debug.pm';
 auto_set_repository;
 requires 'parent';
 requires 'Plack';
-requires 'Text::MicroTemplate';
+requires 'Text::MicroTemplate', 0.15;
 requires 'Data::Dump';
 requires 'File::ShareDir', '1.00';
 requires 'Class::Method::Modifiers', '1.05';
