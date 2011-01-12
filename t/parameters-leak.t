@@ -7,7 +7,11 @@ use Plack::Test;
 use Plack::Builder;
 use HTTP::Request::Common qw(GET);
 use Test::More;
-use Test::LeakTrace;
+
+{
+  eval "use Test::LeakTrace; 1" ||
+    plan( skip_all => "Test::LeakTrace is not installed" );
+}
 
 ok (
   my $app = sub {
