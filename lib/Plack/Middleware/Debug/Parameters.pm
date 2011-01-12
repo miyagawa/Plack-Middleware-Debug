@@ -26,7 +26,9 @@ sub run {
         };
         $panel->title('Request Variables');
         $panel->nav_title('Request Variables');
-        $panel->content( sub { $self->render_hash( $parameters, $self->elements ) } );
+        ##$panel->content( sub { $self->render_hash( $parameters, $self->elements ) } );
+        $panel->content( $self->render_hash( $parameters, $self->elements ) );
+
     }
 }
 
