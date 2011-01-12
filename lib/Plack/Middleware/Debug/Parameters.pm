@@ -41,7 +41,7 @@ Plack::Middleware::Debug::Parameters - Parameters Panel
 
     builder {
         enable 'Debug'; # load defaults
-        enable 'Debug::DBITrace', elements => [qw/headers cookies/];
+        enable 'Debug::Parameters', elements => [qw/headers cookies/];
         $app;
     };
 
