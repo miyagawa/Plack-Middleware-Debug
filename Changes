@@ -1,5 +1,9 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.11  Fri Jan 14 10:54:53 PST 2011
+     - Fixed memory leaks in Parameters panel (jnap)
+     - Fixed memory leaks in responses not HTML/XML (forwardever)
+
 0.10  Wed Aug 25 12:43:54 PDT 2010
      - Support panels in non-200 responses as well since they're useful for debugging anyway (haarg)
 

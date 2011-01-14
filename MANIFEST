@@ -50,6 +50,7 @@ share/debug_toolbar/toolbar.js
 share/debug_toolbar/toolbar.min.css
 share/debug_toolbar/toolbar.min.js
 t/01_basic.t
+t/parameters-leak.t
 t/utf8.t
 xt/author/00_compile.t
 xt/author/01_perl_critic.t
