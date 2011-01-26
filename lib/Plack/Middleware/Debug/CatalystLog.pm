@@ -38,15 +38,15 @@ Plack::Middleware::Debug::Environment - Debug panel to inspect the environment
 
 =head1 SYNOPSIS
 
-    Plack::Middleware::Debug::Environment->new;
+  builder {
+      enable "Debug";
+      enable "Debug::CatalystLog";
+      sub { MyApp->run(@_) };
+  };
 
 =head1 DESCRIPTION
 
-=head1 METHODS
-
-=over 4
-
-=back
+This debug panel captures the logging output from Catalyst applications.
 
 =head1 BUGS AND LIMITATIONS
 

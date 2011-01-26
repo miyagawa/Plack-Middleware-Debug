@@ -42,8 +42,19 @@ __END__
 
 Plack::Middleware::Debug::DBITrace - DBI trace panel
 
+=head1 SYNOPSIS
+
+  enable "Debug";
+  enable "Debug::DBITrace";
+
+=head1 DESCRIPTION
+
+This debug panel captures DBI trace log in a raw format. See also
+L<Plack::Middleware::Debug::DBIProfile> to see the profile log, which
+would be more useful.
+
 =head1 SEE ALSO
 
-L<Plack::Middleware::Debug>
+L<Plack::Middleware::Debug::DBIProfile> L<Plack::Middleware::Debug>
 
 =cut
