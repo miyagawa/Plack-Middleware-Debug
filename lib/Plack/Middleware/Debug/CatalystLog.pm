@@ -23,7 +23,7 @@ sub run {
     return sub {
         my $res = shift;
 
-        my $log = delete $env->{'plack.middleware.catalyst_log'};
+        my $log = delete $env->{'plack.middleware.catalyst_log'} || 'No Log';
         $panel->content("<pre>$log</pre>");
         $psgi_env = undef;
     };
