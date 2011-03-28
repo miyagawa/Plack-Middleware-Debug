@@ -1,5 +1,9 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.12  Mon Mar 28 16:20:54 PDT 2011
+     - Added experimental TrackObjects panel
+     - Fixed UUV warnings for Catalyst (jjn1016)
+
 0.11  Fri Jan 14 10:54:53 PST 2011
      - Fixed memory leaks in Parameters panel (jnap)
      - Fixed memory leaks in responses not HTML/XML (forwardever)
