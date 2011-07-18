@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.13  Mon Jul 18 13:57:27 PDT 2011
+     - Fixed the way $spec mangling works (Jon Swartz)
+
 0.12  Mon Mar 28 16:20:54 PDT 2011
      - Added experimental TrackObjects panel
      - Fixed UUV warnings for Catalyst (jjn1016)
