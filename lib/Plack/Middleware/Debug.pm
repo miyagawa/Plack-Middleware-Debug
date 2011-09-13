@@ -145,7 +145,7 @@ sub call {
 
             my $vars = {
                 panels   => [ grep !$_->disabled, @$panels ],
-                BASE_URL => $env->{SCRIPT_NAME},
+                BASE_URL => $env->{SCRIPT_NAME} || $env->{HTTP_X_REQUEST_BASE},
             };
 
             my $content = $self->renderer->($vars);
