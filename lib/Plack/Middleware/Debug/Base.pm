@@ -128,11 +128,13 @@ my $line_template = __PACKAGE__->build_template(<<'EOTMPL');
 <table>
     <tbody>
 % my $i;
-% my @lines = ref $_[0]->{lines} eq 'ARRAY' ? @{$_[0]->{lines}} : split /\r?\n/, $_[0]->{lines};
-% for my $line (@lines) {
+% if (defined $_[0]->{lines}) {
+%   my @lines = ref $_[0]->{lines} eq 'ARRAY' ? @{$_[0]->{lines}} : split /\r?\n/, $_[0]->{lines};
+%   for my $line (@lines) {
             <tr class="<%= ++$i % 2 ? 'plDebugEven' : 'plDebugOdd' %>">
                 <td><%= $line %></td>
             </tr>
+%   }
 % }
     </tbody>
 </table>
