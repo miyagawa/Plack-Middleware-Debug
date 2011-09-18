@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack-Middleware-Debug
 
+0.14  Sun Sep 18 12:51:49 PDT 2011
+     - Fixed warnings (chiselwright)
+
 0.13  Mon Jul 18 13:57:27 PDT 2011
      - Fixed the way $spec mangling works (Jon Swartz)
 

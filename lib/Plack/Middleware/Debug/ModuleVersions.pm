@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Module::Versions;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 sub run {
     my ($self, $env, $panel) = @_;
