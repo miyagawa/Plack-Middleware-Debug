@@ -13,6 +13,7 @@ requires 'Encode', 2.23;
 feature 'Module versions panel', - default => 0,
     'Module::Versions' => '0.01';
 test_requires 'Test::More' => '0.70';
+test_requires 'Test::Requires';
 install_share 'share';
 auto_install;
 
