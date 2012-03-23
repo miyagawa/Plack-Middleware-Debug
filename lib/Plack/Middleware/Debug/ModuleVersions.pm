@@ -18,7 +18,7 @@ __END__
 
 =head1 NAME
 
-Plack::Middleware::Debug::ModuleVersions - Debug panel to inspect the environment
+Plack::Middleware::Debug::ModuleVersions - Debug panel to inspect versions of loaded modules
 
 =head1 SYNOPSIS
 
