@@ -1,0 +1,189 @@
+# NAME
+
+Plack::Middleware::Debug - display information about the current request/response
+
+# SYNOPSIS
+
+    enable "Debug";
+
+# DESCRIPTION
+
+The debug middleware offers a configurable set of panels that displays
+information about the current request and response. The information is
+generated only for responses with a status of 200 (`OK`) and a
+`Content-Type` that contains `text/html` or `application/xhtml+xml`
+and is embedded in the HTML that is sent back to the browser. Also the
+code is injected directly before the `</body>` tag so if there is
+no such tag, the information will not be injected.
+
+To enable the middleware, just use [Plack::Builder](http://search.cpan.org/perldoc?Plack::Builder) as usual in your `.psgi`
+file:
+
+    use Plack::Builder;
+
+    builder {
+        enable 'Debug', panels => [ qw(DBITrace Memory Timer) ];
+        $app;
+    };
+
+The `Debug` middleware takes an optional `panels` argument whose value is
+expected to be a reference to an array of panel specifications.  If given,
+only those panels will be enabled. If you don't pass a `panels`
+argument, the default list of panels - `Environment`, `Response`,
+`Timer`, `Memory`, `Session` and `DBITrace` - will be enabled, each with
+their default settings, and automatically disabled if their targer modules or
+middleware components are not loaded.
+
+Each panel specification can take one of three forms:
+
+- A string
+
+    This is interpreted as the base name of a panel in the
+    `Plack::Middeware::Debug::` namespace. The panel class is loaded and a panel
+    object is created with its default settings.
+
+- An array reference
+
+    If you need to pass arguments to the panel object as it is created,
+    you may use this form (But see below).
+
+    The first element of the array reference has to be the panel base
+    name.  The remaining elements are key/value pairs to be passed to the
+    panel.
+
+    For example:
+
+        builder {
+            enable 'Debug', panels =>
+              [ qw(Environment Response Timer Memory),
+                [ 'DBITrace', level => 2 ]
+              ];
+            $app;
+        };
+
+    Because each panel is a middleware component, you can write this way
+    as well:
+
+        builder {
+            enable 'Debug'; # load defaults
+            enable 'Debug::DBITrace', level => 2;
+            $app;
+        };
+
+    Note that the `<enable 'Debug'`\> line should come before other Debug
+    panels because of the order middleware components are executed.
+
+- Custom middleware
+
+    You can also pass a Panel middleware component. This might be useful
+    if you have custom debug panels in your framework or web application.
+
+# HOW TO WRITE YOUR OWN DEBUG PANEL
+
+The `Debug` middleware is designed to be easily extensible. You might
+want to write a custom debug panel for your framework or for your web
+application. Each debug panel is also a Plack middleware copmonent and
+is easy to write one.
+
+Let's look at the anatomy of the `Timer` debug panel. Here is the code from
+that panel:
+
+    package Plack::Middleware::Debug::Timer;
+    use Time::HiRes;
+
+    use parent qw(Plack::Middleware::Debug::Base);
+
+    sub run {
+        my($self, $env, $panel) = @_;
+
+      my $start = [ Time::HiRes::gettimeofday ];
+
+      return sub {
+          my $res = shift;
+
+          my $end = [ Time::HiRes::gettimeofday ];
+          my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
+
+            $panel->nav_subtitle($elapsed);
+            $panel->content(
+                $self->render_list_pairs(
+                    [ Start  => $self->format_time($start),
+                      End    => $self->format_time($end),
+                      Elapsed => $elapsed ],
+                ),
+            );
+        };
+    }
+
+    sub format_time { ... }
+
+To write a new debug panel, place it in the `Plack::Middleware::Debug::`
+namespace. In our example, the `Timer` panel lives in the
+`Plack::Middleware::Debug::Timer` package.
+
+The only thing your panel should do is to subclass
+[Plack::Middleware::Debug::Base](http://search.cpan.org/perldoc?Plack::Middleware::Debug::Base). This does most of the things a
+middleware component should do as a Plack middleware, so you only need
+to override `run` method to profile and create the panel content.
+
+    sub run {
+        my($self, $env, $panel) = @_;
+
+      # Do something before the application runs
+
+      return sub {
+          my $res = shift;
+
+          # Do something after the application returns
+
+        };
+    }
+
+You can create as many lexical variables as you need and reference
+that in the returned callback as a closure, and update the content of
+of the `$panel` which is Plack::Middleware::Debug::Panel object.
+
+In our `Timer` example we want to list three key/value pairs: the
+start time, the end time and the elapsed time. We use the
+`render_list_pairs()` method to place the pairs in the order we
+want. There is also a `render_hash()` and `render_lines()` method,
+to render a hash keys and values, as well as just text lines (e.g. log
+messages).
+
+# BUGS AND LIMITATIONS
+
+Please report any bugs or feature requests through the web interface at
+[http://rt.cpan.org](http://rt.cpan.org).
+
+# INSTALLATION
+
+See perlmodinstall for information and options on installing Perl modules.
+
+# AVAILABILITY
+
+The latest version of this module is available from the Comprehensive Perl
+Archive Network (CPAN). Visit [http://www.perl.com/CPAN/](http://www.perl.com/CPAN/) to find a CPAN site
+near you. Or see [http://search.cpan.org/dist/Plack-Middleware-Debug/](http://search.cpan.org/dist/Plack-Middleware-Debug/).
+
+The development version lives at
+[http://github.com/miyagawa/plack-middleware-debug/](http://github.com/miyagawa/plack-middleware-debug/). Instead of sending
+patches, please fork this project using the standard git and github
+infrastructure.
+
+# AUTHORS
+
+Marcel Grunauer, `<marcel@cpan.org>`
+
+Tatsuhiko Miyagawa, `<miyagawa@bulknews.net>`
+
+# COPYRIGHT AND LICENSE
+
+Copyright 2009 by Marcel Gr&uuml;nauer
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+# SEE ALSO
+
+The debug middleware is heavily influenced (that is, adapted from) the Django
+Debug Toolbar - see [http://github.com/robhudson/django-debug-toolbar](http://github.com/robhudson/django-debug-toolbar).

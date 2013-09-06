@@ -1,0 +1,78 @@
+{
+   "abstract" : "display information about the current request/response",
+   "author" : [
+      "Marcel Grunauer, C<< <marcel@cpan.org> >>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Milla version v1.0.4, Dist::Zilla version 4.300037, CPAN::Meta::Converter version 2.132140",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Plack-Middleware-Debug",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build::Tiny" : "0.026"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::Pod" : "1.41"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Class::Method::Modifiers" : "1.05",
+            "Data::Dump" : "0",
+            "Encode" : "2.23",
+            "File::ShareDir" : "1.00",
+            "Plack" : "0",
+            "Text::MicroTemplate" : "0.15",
+            "parent" : "0",
+            "perl" : "5.008001"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.70"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/miyagawa/Plack-Middleware-Debug/issues"
+      },
+      "homepage" : "https://github.com/miyagawa/Plack-Middleware-Debug",
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/miyagawa/Plack-Middleware-Debug.git",
+         "web" : "https://github.com/miyagawa/Plack-Middleware-Debug"
+      }
+   },
+   "version" : "0.14",
+   "x_contributors" : [
+      "Chisel <chisel@chizography.net>",
+      "Graham Knop <haarg@haarg.org>",
+      "John Napiorkowski <jjn1056@yahoo.com>",
+      "Jonathan Swartz <swartz@pobox.com>",
+      "Marcel Gruenauer <hanekomu@gmail.com>",
+      "Tatsuhiko Miyagawa <miyagawa@gmail.com>",
+      "franck cuny <franck@lumberjaph.net>"
+   ]
+}
+
