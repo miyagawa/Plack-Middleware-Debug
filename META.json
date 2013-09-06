@@ -64,7 +64,7 @@
          "web" : "https://github.com/miyagawa/Plack-Middleware-Debug"
       }
    },
-   "version" : "0.14",
+   "version" : "0.15",
    "x_contributors" : [
       "Chisel <chisel@chizography.net>",
       "Graham Knop <haarg@haarg.org>",
