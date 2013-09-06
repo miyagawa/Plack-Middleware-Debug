@@ -2,6 +2,9 @@ Revision history for Perl extension Plack-Middleware-Debug
 
 {{$NEXT}}
 
+0.16  2013-09-06 11:41:25 PDT
+     - Merge with upstream
+
 0.15  2013-09-06 11:37:24 PDT
      - Convert to Milla
      - Fix broken latin-1 META.yml

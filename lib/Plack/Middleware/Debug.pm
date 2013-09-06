@@ -3,7 +3,7 @@ use 5.008_001;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware);
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use Encode;
 use File::ShareDir;
