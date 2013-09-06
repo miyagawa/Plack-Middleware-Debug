@@ -3,7 +3,7 @@ use 5.008;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware::Debug::Base);
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 sub run {
     my($self, $env, $panel) = @_;
