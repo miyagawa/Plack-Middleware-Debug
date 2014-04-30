@@ -5,6 +5,7 @@ use Plack::Test;
 use Plack::Builder;
 use HTTP::Request::Common;
 use Test::More;
+use lib "t/PlackX-Midldeware-Debug";
 my @content_types = ('text/html', 'text/html; charset=utf8',);
 for my $content_type (@content_types) {
     note "Content-Type: $content_type";
@@ -15,7 +16,7 @@ for my $content_type (@content_types) {
         ];
     };
     $app = builder {
-        enable 'Debug';
+        enable 'Debug', panels => [qw(Environment Response Timer Memory Session DBITrace +MiddlewareDebugTest)];
         $app;
     };
     test_psgi $app, sub {

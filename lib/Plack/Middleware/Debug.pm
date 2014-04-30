@@ -103,12 +103,15 @@ sub prepare_app {
             # For the backward compatiblity
             # [ 'PanelName', key1 => $value1, ... ]
             $package = shift @$spec;
-            $builder->add_middleware("Debug::$package", @$spec);
+            $package = "Debug::$package" unless $package =~ /^\+/s;
+            $builder->add_middleware($package, @$spec);
         } else {
             # $spec could be a code ref (middleware) or a string
             # copy so that we do not change default_panels
             my $spec_copy = $spec;
-            $spec_copy = "Debug::$spec_copy" unless ref $spec_copy;
+            unless (ref $spec_copy) {
+                $spec_copy = "Debug::$spec_copy" unless $spec_copy =~ /^\+/s;;
+            }
             $builder->add_middleware($spec_copy);
         }
     }
@@ -205,8 +208,13 @@ Each panel specification can take one of three forms:
 =item A string
 
 This is interpreted as the base name of a panel in the
-C<Plack::Middeware::Debug::> namespace. The panel class is loaded and a panel
-object is created with its default settings.
+C<Plack::Middeware::Debug::> namespace, unless preceded by C<+>, in
+which case it's interpreted as an absolute name similar to how
+L<Plack::Builder> handles such names,
+e.g. C<+My::Plack::Middleware::Debug::Something>.
+
+The panel class is loaded and a panel object is created with its
+default settings.
 
 =item An array reference
 
