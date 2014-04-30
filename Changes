@@ -2,6 +2,11 @@ Revision history for Perl extension Plack-Middleware-Debug
 
 {{$NEXT}}
 
+    - Added support for loading debug middleware outside of the
+      Plack::Middleware::Debug::* namespace, by prefixing the name of
+      middleware with a "+",
+      e.g. "+My::Plack::Middleware::Debug::Something".
+
 0.16  2013-09-06 11:41:25 PDT
      - Merge with upstream
 
