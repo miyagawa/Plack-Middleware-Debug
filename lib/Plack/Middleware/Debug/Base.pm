@@ -5,7 +5,7 @@ use warnings;
 use parent qw(Plack::Middleware);
 use Plack::Util::Accessor qw(renderer);
 use Text::MicroTemplate;
-use Data::Dump;
+use Data::Dumper::Concise;
 use Scalar::Util;
 
 our $VERSION = '0.16';
@@ -59,7 +59,7 @@ sub vardump {
     my $scalar = shift;
     return '(undef)' unless defined $scalar;
     return "$scalar" unless ref $scalar;
-    scalar Data::Dump::dump($scalar);
+    return scalar Dumper( $scalar );
 }
 
 sub build_template {
