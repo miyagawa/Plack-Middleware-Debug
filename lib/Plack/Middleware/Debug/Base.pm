@@ -117,7 +117,7 @@ my $list_template = __PACKAGE__->build_template(<<'EOTMPL');
 % my($key, $value) = splice(@{$_[0]->{list}}, 0, 2);
             <tr class="<%= ++$i % 2 ? 'plDebugOdd' : 'plDebugEven' %>">
                 <td><%= $key %></td>
-                <td><%= vardump($value) %></td>
+                <td><pre><%= vardump($value) %></pre></td>
             </tr>
 % }
     </tbody>
