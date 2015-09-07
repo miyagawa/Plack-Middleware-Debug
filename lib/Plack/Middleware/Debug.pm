@@ -179,9 +179,11 @@ The debug middleware offers a configurable set of panels that displays
 information about the current request and response. The information is
 generated only for responses with a status of 200 (C<OK>) and a
 C<Content-Type> that contains C<text/html> or C<application/xhtml+xml>
-and is embedded in the HTML that is sent back to the browser. Also the
-code is injected directly before the C<< </body> >> tag so if there is
-no such tag, the information will not be injected.
+and is embedded in the HTML that is sent back to the browser.
+
+Note that the code is injected B<directly before the closing tag> (C<<
+</body> >>) so if there is no such tag, the debug panel will not be
+injected at all.
 
 To enable the middleware, just use L<Plack::Builder> as usual in your C<.psgi>
 file:
