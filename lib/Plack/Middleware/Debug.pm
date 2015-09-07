@@ -180,8 +180,8 @@ information about the current request and response. The information is
 generated only for responses with a status of 200 (C<OK>) and a
 C<Content-Type> that contains C<text/html> or C<application/xhtml+xml>
 and is embedded in the HTML that is sent back to the browser. Also the
-code is injected directly before the C<< </body> >> tag so if there is
-no such tag, the information will not be injected.
+B<code is injected directly before the C<< </body> >> tag so if there is
+no such tag, the information will not be injected>.
 
 To enable the middleware, just use L<Plack::Builder> as usual in your C<.psgi>
 file:
@@ -325,6 +325,11 @@ C<render_list_pairs()> method to place the pairs in the order we
 want. There is also a C<render_hash()> and C<render_lines()> method,
 to render a hash keys and values, as well as just text lines (e.g. log
 messages).
+
+=head1 CAVEATS
+
+The code is injected directly before the C<< </body> >> tag so if there is
+no such tag, the information will not be injected and debug panel will not be shown.
 
 =head1 BUGS AND LIMITATIONS
 
