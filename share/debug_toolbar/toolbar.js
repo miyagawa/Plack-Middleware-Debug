@@ -11,7 +11,7 @@ jQuery(function($j) {
 				if (!this.className) {
 					return false;
 				}
-				current = $j('#plDebug #' + this.classList.item(0));
+				current = $j('#plDebug #' + this.className);
 				if (current.is(':visible')) {
 				    $j(document).trigger('close.plDebug');
 					$j(this).parent().removeClass('active');
