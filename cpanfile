@@ -1,5 +1,6 @@
 requires 'Class::Method::Modifiers', '1.05';
 requires 'Data::Dump';
+requires 'Data::Dumper::Concise';
 requires 'Encode', '2.23';
 requires 'File::ShareDir', '1.00';
 requires 'Plack';

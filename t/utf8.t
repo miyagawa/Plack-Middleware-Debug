@@ -22,7 +22,7 @@ test_psgi $app, sub {
     my $res = $cb->(GET '/');
     is $res->code, 200, 'response status 200';
     like $res->content, qr!<h1>テスト</h1>!;
-    like $res->content, qr!<td>test.string</td>\s*<td>&#x30c6;</td>!s;
+    like $res->content, qr!<td>test.string</td>\s*<td><pre>&#x30c6;</pre></td>!s;
 };
 
 done_testing;
