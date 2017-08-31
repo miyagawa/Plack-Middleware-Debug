@@ -277,7 +277,7 @@
 */
 
 #plDebug .panelContent .plDebugClose {
-	text-indent:-9999999px;
+	text-indent:-999999px;
 	display:block;
 	position:absolute;
 	top:4px;
