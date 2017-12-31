@@ -88,7 +88,7 @@ sub prepare_app {
     for my $spec (@{ $self->panels || $self->default_panels }) {
         my ($package, %args);
         if (ref $spec eq 'ARRAY') {
-            # For the backward compatiblity
+            # For the backward compatibility
             # [ 'PanelName', key1 => $value1, ... ]
             $package = shift @$spec;
             $package = "Debug::$package" unless $package =~ /^\+/s;
@@ -188,7 +188,7 @@ expected to be a reference to an array of panel specifications.  If given,
 only those panels will be enabled. If you don't pass a C<panels>
 argument, the default list of panels - C<Environment>, C<Response>,
 C<Timer>, C<Memory>, C<Session> and C<DBITrace> - will be enabled, each with
-their default settings, and automatically disabled if their targer modules or
+their default settings, and automatically disabled if their target modules or
 middleware components are not loaded.
 
 Each panel specification can take one of three forms:
@@ -248,7 +248,7 @@ if you have custom debug panels in your framework or web application.
 
 The C<Debug> middleware is designed to be easily extensible. You might
 want to write a custom debug panel for your framework or for your web
-application. Each debug panel is also a Plack middleware copmonent and
+application. Each debug panel is also a Plack middleware component and
 is easy to write one.
 
 Let's look at the anatomy of the C<Timer> debug panel. Here is the code from
