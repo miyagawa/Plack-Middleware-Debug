@@ -6,6 +6,7 @@ Revision history for Perl extension Plack-Middleware-Debug
       Plack::Middleware::Debug::* namespace, by prefixing the name of
       middleware with a "+",
       e.g. "+My::Plack::Middleware::Debug::Something".
+    - Debug.pm no longer injects inline JavaScript
 
 0.16  2013-09-06 11:41:25 PDT
      - Merge with upstream

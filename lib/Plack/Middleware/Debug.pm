@@ -18,20 +18,8 @@ use Try::Tiny;
 sub TEMPLATE {
     <<'EOTMPL' }
 % my $stash = $_[0];
-<script type="text/javascript" charset="utf-8">
-    // When jQuery is sourced, it's going to overwrite whatever might be in the
-    // '$' variable, so store a reference of it in a temporary variable...
-    var _$ = window.$;
-    if (typeof jQuery == 'undefined') {
-        var jquery_url = '<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js';
-        document.write(unescape('%3Cscript src="' + jquery_url + '" type="text/javascript"%3E%3C/script%3E'));
-    }
-</script>
-<script type="text/javascript" src="<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.js"></script>
-<script type="text/javascript" charset="utf-8">
-    // Now that jQuery is done loading, put the '$' variable back to what it was...
-    var $ = _$;
-</script>
+<script src="<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js"></script>
+<script src="<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.js"></script>
 <style type="text/css">
     @import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
 </style>
