@@ -1,5 +1,6 @@
 sudo: false
 language: perl
+before_install: cpanm --quiet --notest Test::LeakTrace
 perl:
   - "5.26"
   - "5.24"
