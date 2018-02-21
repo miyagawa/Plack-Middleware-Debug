@@ -12,11 +12,12 @@ The debug middleware offers a configurable set of panels that displays
 information about the current request and response. The information is
 generated only for responses with a status of 200 (`OK`) and a
 `Content-Type` that contains `text/html` or `application/xhtml+xml`
-and is embedded in the HTML that is sent back to the browser. Also the
-code is injected directly before the `</body>` tag so if there is
-no such tag, the information will not be injected.
+and is embedded in the HTML that is sent back to the browser.
 
-To enable the middleware, just use [Plack::Builder](http://search.cpan.org/perldoc?Plack::Builder) as usual in your `.psgi`
+Note that the code is injected **directly before the closing tag** (`</body>`) so if there is no such tag, the debug panel will not be
+injected at all.
+
+To enable the middleware, just use [Plack::Builder](https://metacpan.org/pod/Plack::Builder) as usual in your `.psgi`
 file:
 
     use Plack::Builder;
@@ -31,7 +32,7 @@ expected to be a reference to an array of panel specifications.  If given,
 only those panels will be enabled. If you don't pass a `panels`
 argument, the default list of panels - `Environment`, `Response`,
 `Timer`, `Memory`, `Session` and `DBITrace` - will be enabled, each with
-their default settings, and automatically disabled if their targer modules or
+their default settings, and automatically disabled if their target modules or
 middleware components are not loaded.
 
 Each panel specification can take one of three forms:
@@ -39,8 +40,13 @@ Each panel specification can take one of three forms:
 - A string
 
     This is interpreted as the base name of a panel in the
-    `Plack::Middeware::Debug::` namespace. The panel class is loaded and a panel
-    object is created with its default settings.
+    `Plack::Middeware::Debug::` namespace, unless preceded by `+`, in
+    which case it's interpreted as an absolute name similar to how
+    [Plack::Builder](https://metacpan.org/pod/Plack::Builder) handles such names,
+    e.g. `+My::Plack::Middleware::Debug::Something`.
+
+    The panel class is loaded and a panel object is created with its
+    default settings.
 
 - An array reference
 
@@ -70,7 +76,7 @@ Each panel specification can take one of three forms:
             $app;
         };
 
-    Note that the `<enable 'Debug'`\> line should come before other Debug
+    Note that the `<enable 'Debug'`> line should come before other Debug
     panels because of the order middleware components are executed.
 
 - Custom middleware
@@ -82,7 +88,7 @@ Each panel specification can take one of three forms:
 
 The `Debug` middleware is designed to be easily extensible. You might
 want to write a custom debug panel for your framework or for your web
-application. Each debug panel is also a Plack middleware copmonent and
+application. Each debug panel is also a Plack middleware component and
 is easy to write one.
 
 Let's look at the anatomy of the `Timer` debug panel. Here is the code from
@@ -96,13 +102,13 @@ that panel:
     sub run {
         my($self, $env, $panel) = @_;
 
-      my $start = [ Time::HiRes::gettimeofday ];
+        my $start = [ Time::HiRes::gettimeofday ];
 
-      return sub {
-          my $res = shift;
+        return sub {
+            my $res = shift;
 
-          my $end = [ Time::HiRes::gettimeofday ];
-          my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
+            my $end = [ Time::HiRes::gettimeofday ];
+            my $elapsed = sprintf '%.6f s', Time::HiRes::tv_interval $start, $end;
 
             $panel->nav_subtitle($elapsed);
             $panel->content(
@@ -122,19 +128,19 @@ namespace. In our example, the `Timer` panel lives in the
 `Plack::Middleware::Debug::Timer` package.
 
 The only thing your panel should do is to subclass
-[Plack::Middleware::Debug::Base](http://search.cpan.org/perldoc?Plack::Middleware::Debug::Base). This does most of the things a
+[Plack::Middleware::Debug::Base](https://metacpan.org/pod/Plack::Middleware::Debug::Base). This does most of the things a
 middleware component should do as a Plack middleware, so you only need
 to override `run` method to profile and create the panel content.
 
     sub run {
         my($self, $env, $panel) = @_;
 
-      # Do something before the application runs
+        # Do something before the application runs
 
-      return sub {
-          my $res = shift;
+        return sub {
+            my $res = shift;
 
-          # Do something after the application returns
+            # Do something after the application returns
 
         };
     }
@@ -178,7 +184,7 @@ Tatsuhiko Miyagawa, `<miyagawa@bulknews.net>`
 
 # COPYRIGHT AND LICENSE
 
-Copyright 2009 by Marcel Gr&uuml;nauer
+Copyright 2009 by Marcel Grünauer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
