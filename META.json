@@ -53,6 +53,7 @@
       },
       "test" : {
          "requires" : {
+            "Plack::Test" : "0",
             "Test::More" : "0.70",
             "Test::Requires" : "0.08"
          }
