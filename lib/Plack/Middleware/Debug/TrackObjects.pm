@@ -1,6 +1,7 @@
 package Plack::Middleware::Debug::TrackObjects;
 use strict;
 use parent qw(Plack::Middleware::Debug::Base);
+use overload;
 
 sub run {
     my($self, $env, $panel) = @_;
@@ -14,12 +15,12 @@ sub run {
 
         my $track = Devel::TrackObjects->show_tracked_detailed;
         my @content;
-
+ 
         foreach (@$track){
-            if (length($_->[0]) > 100){
-                $_->[0] = substr($_->[0],0,100);
+            if (length(overload::StrVal($_->[0])) > 100){
+                $_->[0] = substr(overload::StrVal($_->[0]),0,100);
             }
-            push @content, $_->[0], $_->[1].' - '.$_->[2];
+            push @content, overload::StrVal($_->[0]), overload::StrVal($_->[1]).' - '.overload::StrVal($_->[2]);
         }
 
         $panel->nav_subtitle('Number:'.scalar(@content)/2);
