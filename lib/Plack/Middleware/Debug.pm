@@ -18,7 +18,9 @@ use Try::Tiny;
 sub TEMPLATE {
     <<'EOTMPL' }
 % my $stash = $_[0];
+% unless ($stash->{exclude_jquery}) {
 <script src="<%= $stash->{BASE_URL} %>/debug_toolbar/jquery.js"></script>
+% }
 <script src="<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.js"></script>
 <style type="text/css">
     @import url(<%= $stash->{BASE_URL} %>/debug_toolbar/toolbar.min.css);
@@ -135,8 +137,9 @@ sub call {
             && ($headers->get('Content-Type') || '') =~ m!^(?:text/html|application/xhtml\+xml)!) {
 
             my $vars = {
-                panels   => [ grep !$_->disabled, @$panels ],
-                BASE_URL => $env->{SCRIPT_NAME},
+                panels         => [ grep !$_->disabled, @$panels ],
+                exclude_jquery => $self->{'exclude_jquery'} // 0,
+                BASE_URL       => $env->{SCRIPT_NAME},
             };
 
             my $content = $self->renderer->($vars);
@@ -315,6 +318,20 @@ C<render_list_pairs()> method to place the pairs in the order we
 want. There is also a C<render_hash()> and C<render_lines()> method,
 to render a hash keys and values, as well as just text lines (e.g. log
 messages).
+
+=head1 EXCLUDING JQUERY
+
+By defualt L<Plack::Middleware::Debug> loads its own copy of jQuery. This
+can cause complications while debugging pages that have already loaded
+jQuery, or that load additional JavaScript files and jQuery plugins after
+the page has initially finished loading.  To indicate an existing jQuery
+should be used instead, the optional argument C<exclude_jquery> can be set
+to '1':
+
+    builder {
+        enable 'Debug', exclude_jquery => 1;
+        $app;
+    };
 
 =head1 BUGS AND LIMITATIONS
 
