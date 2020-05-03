@@ -1,5 +1,5 @@
-jQuery.noConflict();
-jQuery(function($j) {
+var jqDebug = jQuery.noConflict(true);
+jqDebug(function($j) {
 	var COOKIE_NAME = 'plack_debug_panel';
 	$j.plDebug = function(data, klass) {
 		$j.plDebug.init();
@@ -136,6 +136,6 @@ jQuery(function($j) {
 		}
 	});
 });
-jQuery(function() {
-	jQuery.plDebug();
+jqDebug(function($j) {
+	$j.plDebug();
 });
