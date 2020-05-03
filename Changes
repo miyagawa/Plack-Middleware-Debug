@@ -2,6 +2,9 @@ Revision history for Perl extension Plack-Middleware-Debug
 
 {{$NEXT}}
 
+0.18  2020-05-03 13:12:56 PDT
+    - Fix the use of global jQuery function to allow loading multiple jQuery.js #43
+
 0.17  2018-02-22 06:11:23 JST
 
     - Added support for loading debug middleware outside of the
