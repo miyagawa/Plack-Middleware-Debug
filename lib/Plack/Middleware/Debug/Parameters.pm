@@ -13,20 +13,23 @@ sub prepare_app {
 
 sub run {
     my ( $self, $env, $panel ) = @_;
-    return sub {
-        my $parameters;
-        my $request = Plack::Request->new($env);
 
-        $parameters = {
+    my $content = do{
+        my $request = Plack::Request->new($env);
+        my $parameters = {
             get     => $request->query_parameters,
             cookies => $request->cookies,
             post    => $request->body_parameters,
             session => $env->{'psgix.session'},
             headers => $request->headers,
         };
+        $self->render_hash( $parameters, $self->elements );
+    };
+
+    return sub {
         $panel->title('Request Variables');
         $panel->nav_title('Request Variables');
-        $panel->content($self->render_hash( $parameters, $self->elements ));
+        $panel->content($content);
     }
 }
 
